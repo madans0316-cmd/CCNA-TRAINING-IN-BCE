@@ -134,14 +134,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================================================
-       Scroll Spy / Navigation Links Highlight
+       Scroll Spy & Navigation Sync (Desktop & Mobile Bottom Nav)
        ========================================================================== */
     const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
+    const bottomNavLinks = document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item');
     const sections = document.querySelectorAll('.scroll-section');
 
     function scrollSpy() {
         let currentSectionId = '';
-        const scrollPosition = window.scrollY + 200; // Offset for top header
+        const scrollPosition = window.scrollY + 220; // Offset for top header on mobile/desktop
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -151,7 +152,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Sync Desktop Nav Links
         navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                link.classList.add('active');
+            }
+        });
+
+        // Sync Mobile Bottom Nav Tabs
+        bottomNavLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === `#${currentSectionId}`) {
                 link.classList.add('active');
@@ -160,6 +170,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('scroll', scrollSpy);
+
+    // Smooth scroll navigation for Mobile Bottom Tabs
+    bottomNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                // Clear active states
+                navLinks.forEach(nl => nl.classList.remove('active'));
+                bottomNavLinks.forEach(bn => bn.classList.remove('active'));
+                
+                // Add active state to current elements
+                link.classList.add('active');
+                const matchingDesktopLink = document.querySelector(`.desktop-nav a[href="${targetId}"]`);
+                if (matchingDesktopLink) {
+                    matchingDesktopLink.classList.add('active');
+                }
+
+                // Smooth scroll with mobile header offset
+                const headerOffset = 70;
+                const elementPosition = targetSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
 
     /* ==========================================================================
        Form Validation Utility Functions
