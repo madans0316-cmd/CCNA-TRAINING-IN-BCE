@@ -1,11 +1,19 @@
 /* ==========================================================================
-   CCNA CERTIFICATION TRAINING PROGRAM WEBSITE - CONTROLLER SCRIPT
-    Bahubali College of Engineering (BCE) - Center of Excellence for Networking
+   CCNA PROGRAM BCE WEBSITE - CONTROLLER SCRIPT
+    Bahubali College of Engineering (BCE) - CCNA Program BCE
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
+
+    // Helper to resolve API URLs (enables loading via local file:// protocol)
+    const getApiUrl = (path) => {
+        if (window.location.protocol === 'file:') {
+            return 'http://127.0.0.1:5000' + path;
+        }
+        return path;
+    };
 
     // Application state
     let state = {
@@ -16,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         candidateCollege: '',
         candidateDept: '',
         registrationId: '',
-        paymentMethod: 'card'
+        paymentMethod: 'upi'
     };
 
     /* ==========================================================================
@@ -194,6 +202,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const paymentLoader = document.getElementById('payment-loader');
     const loaderStatus = document.getElementById('loader-status');
 
+    // Nested Tab elements in Step 1
+    const nestedTabNew = document.getElementById('nested-tab-new');
+    const nestedTabVerify = document.getElementById('nested-tab-verify');
+    const nestedPaneNew = document.getElementById('nested-pane-new');
+    const nestedPaneVerify = document.getElementById('nested-pane-verify');
+    const duplicateWarningBlock = document.getElementById('duplicate-warning-block');
+
+    const studentLoginForm = document.getElementById('student-login-form');
+    const loginStudentEmail = document.getElementById('login-student-email');
+    const loginStudentPhone = document.getElementById('login-student-phone');
+
+    // Tab switching function
+    function switchStudentTab(tabId) {
+        if (tabId === 'new') {
+            nestedTabNew.classList.add('active');
+            nestedTabVerify.classList.remove('active');
+            nestedPaneNew.style.display = 'block';
+            nestedPaneNew.classList.add('active');
+            nestedPaneVerify.style.display = 'none';
+            nestedPaneVerify.classList.remove('active');
+        } else if (tabId === 'verify') {
+            nestedTabNew.classList.remove('active');
+            nestedTabVerify.classList.add('active');
+            nestedPaneNew.style.display = 'none';
+            nestedPaneNew.classList.remove('active');
+            nestedPaneVerify.style.display = 'block';
+            nestedPaneVerify.classList.add('active');
+        }
+    }
+
+    if (nestedTabNew && nestedTabVerify) {
+        nestedTabNew.addEventListener('click', () => {
+            switchStudentTab('new');
+            duplicateWarningBlock.style.display = 'none'; // hide warning when switching back
+        });
+        nestedTabVerify.addEventListener('click', () => {
+            switchStudentTab('verify');
+        });
+    }
+
+    // Inline blur validation for student login form
+    if (loginStudentEmail && loginStudentPhone) {
+        loginStudentEmail.addEventListener('blur', () => validateInput(loginStudentEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)));
+        loginStudentPhone.addEventListener('blur', () => validateInput(loginStudentPhone, val => /^[0-9]{10}$/.test(val)));
+    }
+
     // Transition wizard panels
     function gotoStep(stepNum) {
         // Remove active states
@@ -240,13 +294,126 @@ document.addEventListener('DOMContentLoaded', () => {
             state.candidateCollege = regCollege.value.trim();
             state.candidateDept = regDept.value.trim();
 
-            // Transition to Step 2
-            gotoStep(2);
-            document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+            const randomRegNum = Math.floor(10000 + Math.random() * 90000);
+            state.registrationId = `BCE-CCNA-${randomRegNum}`;
+
+            // Save to Python SQLite DB (Unpaid)
+            fetch(getApiUrl('/api/register'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reg_id: state.registrationId,
+                    name: state.candidateName,
+                    email: state.candidateEmail,
+                    phone: state.candidatePhone,
+                    role: state.candidateRole,
+                    college: state.candidateCollege,
+                    department: state.candidateDept
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    gotoStep(2);
+                    document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+                } else if (data.code === 'DUPLICATE_EMAIL') {
+                    // Show duplicate warning block and transition tab
+                    duplicateWarningBlock.style.display = 'flex';
+                    switchStudentTab('verify');
+                    // pre-fill the verify fields for better UX
+                    loginStudentEmail.value = state.candidateEmail;
+                    loginStudentPhone.value = state.candidatePhone;
+                    
+                    showToast('This email is already registered. Please verify and proceed.', 'error');
+                    document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showToast('Registration failed: ' + (data.error || 'Server error'), 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                // Fallback
+                gotoStep(2);
+                document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+            });
         } else {
             showToast('Please correct the validation errors in the form.', 'error');
         }
     });
+
+    // Submit Verify / Sign-in form
+    if (studentLoginForm) {
+        studentLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const isEmailValid = validateInput(loginStudentEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val));
+            const isPhoneValid = validateInput(loginStudentPhone, val => /^[0-9]{10}$/.test(val));
+
+            if (isEmailValid && isPhoneValid) {
+                const email = loginStudentEmail.value.trim();
+                const phone = loginStudentPhone.value.trim();
+
+                fetch(getApiUrl('/api/student/login'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, phone })
+                })
+                .then(res => {
+                    if (res.status === 401) {
+                        showToast('Verification failed: No registration matches this email and mobile combination.', 'error');
+                        throw new Error('Unauthorized');
+                    }
+                    if (!res.ok) {
+                        showToast('Verification server error.', 'error');
+                        throw new Error('Server error');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Update state
+                        state.candidateName = data.name;
+                        state.candidateEmail = data.email;
+                        state.candidatePhone = data.phone;
+                        state.candidateRole = data.role;
+                        state.candidateCollege = data.college;
+                        state.candidateDept = data.department;
+                        state.registrationId = data.reg_id;
+
+                        showToast(`Verified candidate: Welcome back, ${data.name}!`, 'success');
+
+                        // Check payment status
+                        if (data.payment_status === 'Paid') {
+                            const dateObj = data.timestamp ? new Date(data.timestamp) : new Date();
+                            const formattedDate = dateObj.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            
+                            document.getElementById('slip-reg-id').textContent = data.reg_id;
+                            document.getElementById('slip-date').textContent = formattedDate;
+                            document.getElementById('slip-candidate-name').textContent = data.name;
+                            document.getElementById('slip-candidate-phone').textContent = `+91 ${data.phone}`;
+                            document.getElementById('slip-candidate-college').textContent = data.college;
+                            document.getElementById('slip-candidate-dept').textContent = data.department;
+                            
+                            gotoStep(3);
+                        } else {
+                            gotoStep(2);
+                        }
+                        document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+                    }
+                })
+                .catch(err => {
+                    console.error('Student Verification error:', err);
+                });
+            } else {
+                showToast('Please correct validation errors on the form.', 'error');
+            }
+        });
+    }
 
     backToStep1Btn.addEventListener('click', () => {
         gotoStep(1);
@@ -367,10 +534,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function finalizeEnrollment() {
-        // Generate registration details
-        const randomRegNum = Math.floor(10000 + Math.random() * 90000);
-        state.registrationId = `BCE-CCNA-${randomRegNum}`;
-        
         const now = new Date();
         const formattedDate = now.toLocaleDateString('en-US', {
             year: 'numeric',
@@ -388,25 +551,33 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('slip-candidate-college').textContent = state.candidateCollege;
         document.getElementById('slip-candidate-dept').textContent = state.candidateDept;
 
-        // Persist to local storage
-        let list = JSON.parse(localStorage.getItem('ccna_registrations') || '[]');
-        list.push({
-            id: state.registrationId,
-            name: state.candidateName,
-            email: state.candidateEmail,
-            phone: state.candidatePhone,
-            role: state.candidateRole,
-            college: state.candidateCollege,
-            department: state.candidateDept,
-            paymentMethod: state.paymentMethod,
-            timestamp: now.toISOString()
+        // Update payment status on Python Server
+        fetch(getApiUrl('/api/pay'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                reg_id: state.registrationId,
+                payment_method: state.paymentMethod
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Advance to Step 3
+                gotoStep(3);
+                document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+                showToast('Registration successfully verified. Seat reserved!', 'success');
+            } else {
+                showToast('Payment update failed: ' + (data.error || 'Server error'), 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            // Fallback
+            gotoStep(3);
+            document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+            showToast('Registration saved locally. Seat reserved!', 'success');
         });
-        localStorage.setItem('ccna_registrations', JSON.stringify(list));
-
-        // Advance to Step 3
-        gotoStep(3);
-        document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
-        showToast('Registration successfully verified. Seat reserved!', 'success');
     }
 
     // Print functionality
@@ -421,6 +592,9 @@ document.addEventListener('DOMContentLoaded', () => {
         paymentCardForm.reset();
         paymentUpiForm.reset();
         paymentBankForm.reset();
+        if (studentLoginForm) studentLoginForm.reset();
+        if (duplicateWarningBlock) duplicateWarningBlock.style.display = 'none';
+        switchStudentTab('new');
         
         // Remove validation classes
         document.querySelectorAll('.form-group').forEach(group => {
@@ -434,38 +608,53 @@ document.addEventListener('DOMContentLoaded', () => {
        Contact Form Validation & Processing
        ========================================================================== */
     const contactForm = document.getElementById('contact-inquiry-form');
-    const contactName = document.getElementById('contact-name');
-    const contactEmail = document.getElementById('contact-email');
-    const contactMsg = document.getElementById('contact-msg');
+    if (contactForm) {
+        const contactName = document.getElementById('contact-name');
+        const contactEmail = document.getElementById('contact-email');
+        const contactMsg = document.getElementById('contact-msg');
 
-    contactName.addEventListener('blur', () => validateInput(contactName, val => val.length >= 2));
-    contactEmail.addEventListener('blur', () => validateInput(contactEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)));
-    contactMsg.addEventListener('blur', () => validateInput(contactMsg, val => val.length >= 10));
+        contactName.addEventListener('blur', () => validateInput(contactName, val => val.length >= 2));
+        contactEmail.addEventListener('blur', () => validateInput(contactEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)));
+        contactMsg.addEventListener('blur', () => validateInput(contactMsg, val => val.length >= 10));
 
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-        const nameValid = validateInput(contactName, val => val.length >= 2);
-        const emailValid = validateInput(contactEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val));
-        const msgValid = validateInput(contactMsg, val => val.length >= 10);
+            const nameValid = validateInput(contactName, val => val.length >= 2);
+            const emailValid = validateInput(contactEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val));
+            const msgValid = validateInput(contactMsg, val => val.length >= 10);
 
-        if (nameValid && emailValid && msgValid) {
-            // Save inquiry to local storage
-            let inquiries = JSON.parse(localStorage.getItem('ccna_inquiries') || '[]');
-            inquiries.push({
-                name: contactName.value.trim(),
-                email: contactEmail.value.trim(),
-                message: contactMsg.value.trim(),
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('ccna_inquiries', JSON.stringify(inquiries));
-
-            contactForm.reset();
-            showToast('Your inquiry has been sent to Mr. S. Deepak.', 'success');
-        } else {
-            showToast('Please correct validation issues before submitting.', 'error');
-        }
-    });
+            if (nameValid && emailValid && msgValid) {
+                // Save inquiry to Python Database
+                fetch(getApiUrl('/api/inquiry'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: contactName.value.trim(),
+                        email: contactEmail.value.trim(),
+                        message: contactMsg.value.trim()
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        contactForm.reset();
+                        showToast('Your inquiry has been sent to Mr. S. Deepak.', 'success');
+                    } else {
+                        showToast('Submission failed: ' + (data.error || 'Server error'), 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    // Fallback
+                    contactForm.reset();
+                    showToast('Your inquiry has been sent to Mr. S. Deepak.', 'success');
+                });
+            } else {
+                showToast('Please correct validation issues before submitting.', 'error');
+            }
+        });
+    }
 
     /* ==========================================================================
        QR Code Download Script
@@ -530,4 +719,186 @@ document.addEventListener('DOMContentLoaded', () => {
             toast.classList.remove('active');
         }, 4000);
     }
+
+    /* ==========================================================================
+       Mentor Access & Analytics Dashboard
+       ========================================================================== */
+    const mentorAccessBtn = document.getElementById('mentor-access-btn');
+    const mobileMentorBtn = document.getElementById('mobile-mentor-btn');
+    const mentorLoginModal = document.getElementById('mentor-login-modal');
+    const closeLoginBtn = document.getElementById('close-login-btn');
+    const mentorLoginForm = document.getElementById('mentor-login-form');
+    const loginUsernameInput = document.getElementById('login-username');
+    const loginPasswordInput = document.getElementById('login-password');
+    const mentorDashboard = document.getElementById('mentor-dashboard');
+    const mentorLogoutBtn = document.getElementById('mentor-logout-btn');
+    const dbSearch = document.getElementById('db-search');
+    const dbFilter = document.getElementById('db-filter');
+
+    let dashboardData = { registrations: [], inquiries: [] };
+
+    // Toggle Modal
+    function toggleLoginModal(open) {
+        if (open) {
+            mentorLoginModal.classList.add('active');
+        } else {
+            mentorLoginModal.classList.remove('active');
+            mentorLoginForm.reset();
+        }
+    }
+
+    mentorAccessBtn.addEventListener('click', () => toggleLoginModal(true));
+    if (mobileMentorBtn) {
+        mobileMentorBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleLoginModal(true);
+        });
+    }
+    closeLoginBtn.addEventListener('click', () => toggleLoginModal(false));
+
+    // Form Submit login
+    mentorLoginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = loginUsernameInput.value.trim();
+        const password = loginPasswordInput.value.trim();
+
+        fetch(getApiUrl('/api/login'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                sessionStorage.setItem('mentor_token', data.token);
+                toggleLoginModal(false);
+                showDashboard();
+                showToast('Unlocked Mentor Dashboard successfully!', 'success');
+            } else {
+                showToast(data.error || 'Invalid credentials.', 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('Authentication failed. Server offline.', 'error');
+        });
+    });
+
+    // Logout
+    mentorLogoutBtn.addEventListener('click', () => {
+        sessionStorage.removeItem('mentor_token');
+        mentorDashboard.classList.remove('active');
+        document.body.style.overflow = '';
+        showToast('Logged out from dashboard.', 'success');
+    });
+
+    // Check existing session
+    const activeToken = sessionStorage.getItem('mentor_token');
+    if (activeToken) {
+        showDashboard();
+    }
+
+    function showDashboard() {
+        mentorDashboard.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Lock main scroll
+        loadDashboardData();
+    }
+
+    function loadDashboardData() {
+        const token = sessionStorage.getItem('mentor_token');
+        if (!token) return;
+
+        // Fetch Stats
+        fetch(getApiUrl('/api/mentor/stats'), {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(stats => {
+            document.getElementById('stat-registered').textContent = stats.registered;
+            document.getElementById('stat-paid').textContent = stats.paid;
+            document.getElementById('stat-unpaid').textContent = stats.unpaid;
+            document.getElementById('stat-inquiries').textContent = stats.inquiries;
+        })
+        .catch(err => console.error('Error fetching stats:', err));
+
+        // Fetch Detailed Data
+        fetch(getApiUrl('/api/mentor/data'), {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            dashboardData.registrations = data.registrations || [];
+            dashboardData.inquiries = data.inquiries || [];
+            renderTables();
+        })
+        .catch(err => console.error('Error fetching data:', err));
+    }
+
+    function renderTables() {
+        const regTbody = document.getElementById('registrations-tbody');
+        const inqTbody = document.getElementById('inquiries-tbody');
+        
+        // Filter and Search terms
+        const filterVal = dbFilter.value;
+        const searchVal = dbSearch.value.trim().toLowerCase();
+
+        // Render Registrations
+        regTbody.innerHTML = '';
+        const filteredRegs = dashboardData.registrations.filter(reg => {
+            const matchesSearch = reg.name.toLowerCase().includes(searchVal) || reg.college.toLowerCase().includes(searchVal);
+            const matchesFilter = filterVal === 'all' || 
+                                 (filterVal === 'paid' && reg.payment_status === 'Paid') ||
+                                 (filterVal === 'unpaid' && reg.payment_status === 'Unpaid');
+            return matchesSearch && matchesFilter;
+        });
+
+        if (filteredRegs.length === 0) {
+            regTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching records found</td></tr>`;
+        } else {
+            filteredRegs.forEach(reg => {
+                const date = new Date(reg.timestamp).toLocaleDateString();
+                const statusClass = reg.payment_status === 'Paid' ? 'paid' : 'unpaid';
+                const methodStr = reg.payment_method ? ` via ${reg.payment_method.toUpperCase()}` : '';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family: 'Outfit'; font-weight: 600; color: var(--accent-color);">${reg.reg_id}</td>
+                    <td><strong>${reg.name}</strong></td>
+                    <td>
+                        <span style="display:block;">${reg.email}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${reg.phone}</span>
+                    </td>
+                    <td>
+                        <span style="display:block; font-weight:500;">${reg.college}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${reg.department.toUpperCase()} (${reg.role})</span>
+                    </td>
+                    <td><span class="status-badge ${statusClass}">${reg.payment_status}${methodStr}</span></td>
+                    <td>${date}</td>
+                `;
+                regTbody.appendChild(tr);
+            });
+        }
+
+        // Render Inquiries
+        inqTbody.innerHTML = '';
+        if (dashboardData.inquiries.length === 0) {
+            inqTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">No inquiries received yet</td></tr>`;
+        } else {
+            dashboardData.inquiries.forEach(inq => {
+                const date = new Date(inq.timestamp).toLocaleDateString();
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${inq.name}</strong></td>
+                    <td>${inq.email}</td>
+                    <td style="white-space: pre-wrap; font-size:0.8rem; line-height: 1.4; max-width: 350px;">${inq.message}</td>
+                    <td>${date}</td>
+                `;
+                inqTbody.appendChild(tr);
+            });
+        }
+    }
+
+    // Search and Filter Listeners
+    dbSearch.addEventListener('input', renderTables);
+    dbFilter.addEventListener('change', renderTables);
 });

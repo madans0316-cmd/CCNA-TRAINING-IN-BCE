@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCNA Certification Training Program | Bahubali College of Engineering</title>
+    <title>CCNA Program BCE | Bahubali College of Engineering</title>
     
     <!-- Meta Descriptions for SEO -->
     <meta name="description" content="Enroll in the CCNA Certification Training Program at Bahubali College of Engineering. 150 hours of extensive offline practical labs, network fundamentals, IPv4/IPv6, subnetting, routing, switching, and automation. Become CCNA ready!">
@@ -11,7 +11,7 @@
     <meta name="author" content="Bahubali College of Engineering">
     
     <!-- Open Graph for Social Sharing -->
-    <meta property="og:title" content="CCNA Certification Training Program - BCE CoE Networking">
+    <meta property="og:title" content="CCNA Program BCE - Bahubali College of Engineering">
     <meta property="og:description" content="Launch your career in networking with 150 hours of hands-on practical labs at BCE Center of Excellence. Register online.">
     <meta property="og:image" content="assets/hero.png">
     <meta property="og:type" content="website">
@@ -39,7 +39,7 @@
             <div class="brand-logo" id="brand-logo">
                 <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
                 <div class="logo-text">
-                    <span class="logo-title">BCE NETWORKING</span>
+                    <span class="logo-title">CCNA PROGRAM BCE</span>
                     <span class="logo-subtitle">Center of Excellence</span>
                 </div>
             </div>
@@ -61,6 +61,10 @@
                     <i data-lucide="sun" class="sun-icon"></i>
                     <i data-lucide="moon" class="moon-icon"></i>
                 </button>
+                <!-- Mentor Access -->
+                <button id="mentor-access-btn" class="theme-btn" aria-label="Mentor Access" title="Mentor Portal">
+                    <i data-lucide="lock" class="lock-icon"></i>
+                </button>
                 <a href="#register" class="cta-btn primary-btn pulse-glow-btn">Register Now</a>
                 
                 <!-- Hamburger Menu for Mobile -->
@@ -78,7 +82,7 @@
         <div class="drawer-header">
             <div class="brand-logo">
                 <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
-                <span class="logo-title">BCE CoE</span>
+                <span class="logo-title">CCNA Program BCE</span>
             </div>
             <button id="close-drawer-btn" class="close-btn"><i data-lucide="x"></i></button>
         </div>
@@ -89,6 +93,7 @@
             <a href="#schedule" class="mobile-link">Schedule</a>
             <a href="#faq" class="mobile-link">FAQs</a>
             <a href="#contact" class="mobile-link">Contact</a>
+            <a href="#" id="mobile-mentor-btn" class="mobile-link"><i data-lucide="lock" class="icon-xs" style="vertical-align: middle; margin-right: 4px;"></i> Mentor Portal</a>
             <a href="#register" class="mobile-link mobile-cta">Register Now</a>
         </nav>
     </div>
@@ -602,80 +607,135 @@
                     <!-- Wizard Body -->
                     <div class="wizard-body">
                         
-                        <!-- Step 1: Registration Form -->
+                        <!-- Step 1: Registration / Verification -->
                         <div class="wizard-step-pane active" id="wizard-step-1">
-                            <form id="registration-form" novalidate>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="reg-name">Full Name <span class="req">*</span></label>
-                                        <div class="input-wrapper">
-                                            <i data-lucide="user" class="input-icon"></i>
-                                            <input type="text" id="reg-name" placeholder="Enter your full name" required minlength="3">
-                                        </div>
-                                        <span class="error-msg" id="err-reg-name">Please enter your full name (at least 3 characters).</span>
-                                    </div>
+                            <div class="nested-tabs-header" style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                                <button type="button" class="nested-tab-btn active" id="nested-tab-new" style="display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">
+                                    <i data-lucide="user-plus" style="width: 16px; height: 16px;"></i> New Registration
+                                </button>
+                                <button type="button" class="nested-tab-btn" id="nested-tab-verify" style="display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">
+                                    <i data-lucide="user-check" style="width: 16px; height: 16px;"></i> Verify / Sign In
+                                </button>
+                            </div>
 
-                                    <div class="form-group">
-                                        <label for="reg-email">Email Address <span class="req">*</span></label>
-                                        <div class="input-wrapper">
-                                            <i data-lucide="mail" class="input-icon"></i>
-                                            <input type="email" id="reg-email" placeholder="example@domain.com" required>
-                                        </div>
-                                        <span class="error-msg" id="err-reg-email">Please enter a valid email address.</span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="reg-phone">Mobile Number <span class="req">*</span></label>
-                                        <div class="input-wrapper">
-                                            <i data-lucide="phone" class="input-icon"></i>
-                                            <input type="tel" id="reg-phone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
-                                        </div>
-                                        <span class="error-msg" id="err-reg-phone">Please enter a valid 10-digit mobile number.</span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="reg-role">Current Profile / Role <span class="req">*</span></label>
-                                        <div class="input-wrapper">
-                                            <i data-lucide="briefcase" class="input-icon"></i>
-                                            <select id="reg-role" required>
-                                                <option value="" disabled selected>Select your profile</option>
-                                                <option value="student">Engineering Student</option>
-                                                <option value="jobseeker">IT Job Seeker</option>
-                                                <option value="faculty">Faculty Member</option>
-                                                <option value="other">Other Professional</option>
-                                            </select>
-                                        </div>
-                                        <span class="error-msg" id="err-reg-role">Please select your current profile.</span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="reg-college">Institution / College / Company <span class="req">*</span></label>
-                                        <div class="input-wrapper">
-                                            <i data-lucide="landmark" class="input-icon"></i>
-                                            <input type="text" id="reg-college" placeholder="Name of institution or workplace" required>
-                                        </div>
-                                        <span class="error-msg" id="err-reg-college">Please enter your institution/workplace.</span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="reg-dept">Department / Branch <span class="req">*</span></label>
-                                        <div class="input-wrapper">
-                                            <i data-lucide="layers" class="input-icon"></i>
-                                            <input type="text" id="reg-dept" placeholder="e.g. ECE, CSE, IT" required>
-                                        </div>
-                                        <span class="error-msg" id="err-reg-dept">Please enter your department/branch.</span>
-                                    </div>
+                            <!-- Duplicate Warning -->
+                            <div id="duplicate-warning-block" class="form-disclaimer glass-card" style="display: none; background-color: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.15); margin-bottom: 20px; gap: 12px;">
+                                <i data-lucide="alert-circle" class="text-error" style="width: 20px; height: 20px; flex-shrink: 0;"></i>
+                                <div style="text-align: left;">
+                                    <h5 style="color: var(--error-color); font-weight: 700; font-size: 0.9rem;">Duplicate Email Detected</h5>
+                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">An application with this email already exists. Please select the <strong>Verify / Sign In</strong> tab above, then enter your registered email and mobile number to complete payment or access your admission slip.</p>
                                 </div>
+                            </div>
 
-                                <div class="form-disclaimer glass-card">
-                                    <i data-lucide="info" class="text-accent"></i>
-                                    <p>Upon clicking "Proceed to Fee Payment", you will review your pricing breakdown. A dynamic mock sandbox transaction environment is used for verification.</p>
-                                </div>
+                            <!-- Form Pane 1: New Sign-Up -->
+                            <div class="nested-pane active" id="nested-pane-new">
+                                <form id="registration-form" novalidate>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="reg-name">Full Name <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="user" class="input-icon"></i>
+                                                <input type="text" id="reg-name" placeholder="Enter your full name" required minlength="3">
+                                            </div>
+                                            <span class="error-msg" id="err-reg-name">Please enter your full name (at least 3 characters).</span>
+                                        </div>
 
-                                <div class="wizard-actions">
-                                    <button type="submit" class="cta-btn primary-btn shadow-btn">Proceed to Fee Payment <i data-lucide="arrow-right"></i></button>
-                                </div>
-                            </form>
+                                        <div class="form-group">
+                                            <label for="reg-email">Email Address <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="mail" class="input-icon"></i>
+                                                <input type="email" id="reg-email" placeholder="example@domain.com" required>
+                                            </div>
+                                            <span class="error-msg" id="err-reg-email">Please enter a valid email address.</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="reg-phone">Mobile Number <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="phone" class="input-icon"></i>
+                                                <input type="tel" id="reg-phone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+                                            </div>
+                                            <span class="error-msg" id="err-reg-phone">Please enter a valid 10-digit mobile number.</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="reg-role">Current Profile / Role <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="briefcase" class="input-icon"></i>
+                                                <select id="reg-role" required>
+                                                    <option value="" disabled selected>Select your profile</option>
+                                                    <option value="student">Engineering Student</option>
+                                                    <option value="jobseeker">IT Job Seeker</option>
+                                                    <option value="faculty">Faculty Member</option>
+                                                    <option value="other">Other Professional</option>
+                                                </select>
+                                            </div>
+                                            <span class="error-msg" id="err-reg-role">Please select your current profile.</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="reg-college">Institution / College / Company <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="landmark" class="input-icon"></i>
+                                                <input type="text" id="reg-college" placeholder="Name of institution or workplace" required>
+                                            </div>
+                                            <span class="error-msg" id="err-reg-college">Please enter your institution/workplace.</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="reg-dept">Department / Branch <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="layers" class="input-icon"></i>
+                                                <input type="text" id="reg-dept" placeholder="e.g. ECE, CSE, IT" required>
+                                            </div>
+                                            <span class="error-msg" id="err-reg-dept">Please enter your department/branch.</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-disclaimer glass-card">
+                                        <i data-lucide="info" class="text-accent"></i>
+                                        <p>Upon clicking "Proceed to Fee Payment", you will review your pricing breakdown. A secure mock sandbox checkout environment is used for verification.</p>
+                                    </div>
+
+                                    <div class="wizard-actions">
+                                        <button type="submit" class="cta-btn primary-btn shadow-btn">Proceed to Fee Payment <i data-lucide="arrow-right"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Form Pane 2: Verify / Sign-In -->
+                            <div class="nested-pane" id="nested-pane-verify" style="display: none;">
+                                <form id="student-login-form" novalidate>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="login-student-email">Email Address <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="mail" class="input-icon"></i>
+                                                <input type="email" id="login-student-email" placeholder="Enter your registered email" required>
+                                            </div>
+                                            <span class="error-msg" id="err-login-student-email">Please enter a valid email address.</span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="login-student-phone">Mobile Number <span class="req">*</span></label>
+                                            <div class="input-wrapper">
+                                                <i data-lucide="phone" class="input-icon"></i>
+                                                <input type="tel" id="login-student-phone" placeholder="Enter your 10-digit mobile number" required pattern="[0-9]{10}">
+                                            </div>
+                                            <span class="error-msg" id="err-login-student-phone">Please enter your registered 10-digit mobile number.</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-disclaimer glass-card" style="margin-top: 24px;">
+                                        <i data-lucide="shield-check" class="text-accent"></i>
+                                        <p>Sign-in details act as secure checks. If payment was completed, you'll be redirected directly to your admission receipt. If payment is pending, you'll proceed to checkout.</p>
+                                    </div>
+
+                                    <div class="wizard-actions">
+                                        <button type="submit" class="cta-btn primary-btn shadow-btn">Verify & Proceed <i data-lucide="arrow-right"></i></button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
 
                         <!-- Step 2: Payment Portal -->
@@ -688,13 +748,9 @@
                                         <span>Course Fee:</span>
                                         <span class="amount-val">₹5,000</span>
                                     </div>
-                                    <div class="summary-line">
-                                        <span>GST (18%):</span>
-                                        <span class="amount-val">₹900</span>
-                                    </div>
                                     <div class="summary-line total-line">
                                         <span>Grand Total:</span>
-                                        <span class="amount-val total-amt">₹5,900</span>
+                                        <span class="amount-val total-amt">₹5,000</span>
                                     </div>
                                     
                                     <div class="secure-badge">
@@ -706,55 +762,14 @@
                                 <!-- Payment Selector Portal -->
                                 <div class="payment-portal-panel">
                                     <div class="payment-tabs-header">
-                                        <button class="pay-tab-btn active" data-paymethod="card">
-                                            <i data-lucide="credit-card"></i> Card
-                                        </button>
-                                        <button class="pay-tab-btn" data-paymethod="upi">
+                                        <button class="pay-tab-btn active" data-paymethod="upi">
                                             <i data-lucide="smartphone"></i> UPI / QR
-                                        </button>
-                                        <button class="pay-tab-btn" data-paymethod="banking">
-                                            <i data-lucide="landmark"></i> Net Banking
                                         </button>
                                     </div>
 
                                     <div class="payment-tab-content">
-                                        <!-- Card Content -->
-                                        <div class="pay-pane active" id="pay-pane-card">
-                                            <form id="payment-card-form" novalidate>
-                                                <div class="form-group">
-                                                    <label for="pay-card-num">Card Number</label>
-                                                    <div class="input-wrapper">
-                                                        <i data-lucide="credit-card" class="input-icon"></i>
-                                                        <input type="text" id="pay-card-num" placeholder="4111 2222 3333 4444" required maxlength="19" pattern="\d{4}\s\d{4}\s\d{4}\s\d{4}">
-                                                    </div>
-                                                    <span class="error-msg" id="err-pay-card-num">Enter a valid 16-digit card number.</span>
-                                                </div>
-
-                                                <div class="form-row">
-                                                    <div class="form-group half">
-                                                        <label for="pay-card-exp">Expiry (MM/YY)</label>
-                                                        <input type="text" id="pay-card-exp" placeholder="MM/YY" required maxlength="5" pattern="(0[1-9]|1[0-2])\/\d{2}">
-                                                        <span class="error-msg" id="err-pay-card-exp">Use MM/YY.</span>
-                                                    </div>
-                                                    <div class="form-group half">
-                                                        <label for="pay-card-cvv">CVV</label>
-                                                        <input type="password" id="pay-card-cvv" placeholder="•••" required maxlength="3" pattern="\d{3}">
-                                                        <span class="error-msg" id="err-pay-card-cvv">Enter 3 digits.</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="pay-card-name">Cardholder Name</label>
-                                                    <input type="text" id="pay-card-name" placeholder="Name on Card" required>
-                                                    <span class="error-msg" id="err-pay-card-name">Cardholder name is required.</span>
-                                                </div>
-
-                                                <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Pay ₹5,900 Securely</button>
-                                            </form>
-                                        </div>
-
                                         <!-- UPI QR Content -->
-                                        <div class="pay-pane" id="pay-pane-upi">
+                                        <div class="pay-pane active" id="pay-pane-upi">
                                             <div class="upi-flow-layout">
                                                 <div class="qr-box-wrapper glass-card">
                                                     <!-- Dynamic visual representation of a payment scan QR -->
@@ -797,33 +812,10 @@
                                                             <input type="text" id="pay-upi-id" placeholder="username@upi" required pattern="[\w\.\-]+@\w+">
                                                             <span class="error-msg" id="err-pay-upi-id">Enter a valid UPI ID (e.g. name@bank).</span>
                                                         </div>
-                                                        <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Pay ₹5,900</button>
+                                                        <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Pay ₹5,000</button>
                                                     </form>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <!-- Net Banking Content -->
-                                        <div class="pay-pane" id="pay-pane-banking">
-                                            <form id="payment-bank-form" novalidate>
-                                                <div class="form-group">
-                                                    <label for="pay-bank-select">Select Popular Bank</label>
-                                                    <div class="input-wrapper">
-                                                        <i data-lucide="landmark" class="input-icon"></i>
-                                                        <select id="pay-bank-select" required>
-                                                            <option value="" disabled selected>Choose a Bank</option>
-                                                            <option value="sbi">State Bank of India</option>
-                                                            <option value="hdfc">HDFC Bank</option>
-                                                            <option value="icici">ICICI Bank</option>
-                                                            <option value="axis">Axis Bank</option>
-                                                            <option value="kotak">Kotak Mahindra Bank</option>
-                                                        </select>
-                                                    </div>
-                                                    <span class="error-msg" id="err-pay-bank-select">Please select a bank.</span>
-                                                </div>
-
-                                                <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Redirect to Secure Bank Gateway</button>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -850,7 +842,7 @@
                                     <img src="assets/logo.png" alt="CoE Logo" class="slip-logo">
                                     <div class="slip-title-meta">
                                         <h4>BAHUBALI COLLEGE OF ENGINEERING</h4>
-                                        <span class="sub">Center of Excellence for Networking - Admission Slip</span>
+                                        <span class="sub">CCNA Program BCE - Admission Slip</span>
                                     </div>
                                 </div>
                                 
@@ -1003,97 +995,70 @@
             <div class="section-container">
                 <div class="section-header">
                     <span class="section-subtitle">GET IN TOUCH</span>
-                    <h2 class="section-title">Program Information & Inquiry</h2>
+                    <h2 class="section-title">Program Information & Contact</h2>
                     <div class="header-divider"></div>
                 </div>
 
                 <div class="contact-grid">
                     
-                    <!-- Direct Contacts Card -->
-                    <div class="contact-info-column">
-                        <div class="contact-info-card glass-card">
-                            <h3>Venue Location</h3>
-                            <p>Centre of Excellence for Networking,<br>Bahubali College of Engineering,<br>Shravanabelagola - 573 135,<br>Hassan Dist, Karnataka, India.</p>
-                        </div>
-
-                        <div class="contact-info-card glass-card">
-                            <h3>Direct Contacts</h3>
-                            <a href="tel:+917339248886" class="contact-link">
-                                <i data-lucide="phone"></i> +91 7339248886
-                            </a>
-                            <a href="mailto:sdeepak.bce@gmail.com" class="contact-link">
-                                <i data-lucide="mail"></i> sdeepak.bce@gmail.com
-                            </a>
-                        </div>
-
-                        <!-- Poster QR Download Card -->
-                        <div class="poster-qr-card glass-card">
-                            <div class="poster-qr-meta">
-                                <h4>Poster Scan Access</h4>
-                                <p>Scanning this QR code on a physical flyer loads this registration web portal immediately.</p>
-                                <button class="cta-btn secondary-btn btn-sm" id="download-qr-btn"><i data-lucide="download"></i> Download QR for Posters</button>
-                            </div>
-                            <div class="poster-qr-graphic">
-                                <svg viewBox="0 0 100 100" class="qr-vector-main" id="poster-qr-svg">
-                                    <rect width="100" height="100" fill="#ffffff"/>
-                                    <!-- Corners -->
-                                    <rect x="5" y="5" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
-                                    <rect x="9.5" y="9.5" width="13" height="13" fill="#ffffff"/>
-                                    <rect x="12" y="12" width="8" height="8" fill="#0b0f19"/>
-
-                                    <rect x="73" y="5" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
-                                    <rect x="77.5" y="9.5" width="13" height="13" fill="#ffffff"/>
-                                    <rect x="80" y="12" width="8" height="8" fill="#0b0f19"/>
-
-                                    <rect x="5" y="73" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
-                                    <rect x="9.5" y="77.5" width="13" height="13" fill="#ffffff"/>
-                                    <rect x="12" y="80" width="8" height="8" fill="#0b0f19"/>
-
-                                    <!-- Internal pattern nodes -->
-                                    <rect x="35" y="10" width="5" height="15" fill="#0b0f19"/>
-                                    <rect x="45" y="5" width="10" height="5" fill="#0b0f19"/>
-                                    <rect x="60" y="15" width="5" height="15" fill="#0b0f19"/>
-                                    <rect x="10" y="35" width="15" height="5" fill="#0b0f19"/>
-                                    <rect x="5" y="50" width="15" height="5" fill="#0b0f19"/>
-                                    <rect x="35" y="35" width="30" height="5" fill="#0b0f19"/>
-                                    <rect x="40" y="45" width="10" height="20" fill="#0b0f19"/>
-                                    <rect x="60" y="50" width="10" height="5" fill="#0b0f19"/>
-                                    <rect x="75" y="35" width="20" height="5" fill="#0b0f19"/>
-                                    <rect x="85" y="45" width="5" height="20" fill="#0b0f19"/>
-                                    <rect x="35" y="75" width="5" height="15" fill="#0b0f19"/>
-                                    <rect x="45" y="85" width="20" height="5" fill="#0b0f19"/>
-                                    <rect x="60" y="70" width="10" height="5" fill="#0b0f19"/>
-                                    <rect x="75" y="75" width="20" height="20" fill="#0b0f19"/>
-                                    <rect x="80" y="80" width="10" height="10" fill="#ffffff"/>
-                                </svg>
-                            </div>
-                        </div>
+                    <!-- Venue Location Card -->
+                    <div class="contact-info-card glass-card">
+                        <h3>Venue Location</h3>
+                        <p>Centre of Excellence for Networking,<br>Bahubali College of Engineering,<br>Shravanabelagola - 573 135,<br>Hassan Dist, Karnataka, India.</p>
                     </div>
 
-                    <!-- Contact Inquiry Form -->
-                    <div class="contact-form-panel glass-card">
-                        <h3>Send an Inquiry</h3>
-                        <form id="contact-inquiry-form" novalidate>
-                            <div class="form-group">
-                                <label for="contact-name">Your Name</label>
-                                <input type="text" id="contact-name" placeholder="John Doe" required minlength="2">
-                                <span class="error-msg" id="err-contact-name">Please enter your name (at least 2 characters).</span>
-                            </div>
+                    <!-- Direct Contacts Card -->
+                    <div class="contact-info-card glass-card">
+                        <h3>Direct Contacts</h3>
+                        <a href="tel:+917339248886" class="contact-link">
+                            <i data-lucide="phone"></i> +91 7339248886
+                        </a>
+                        <a href="mailto:sdeepak.bce@gmail.com" class="contact-link">
+                            <i data-lucide="mail"></i> sdeepak.bce@gmail.com
+                        </a>
+                    </div>
 
-                            <div class="form-group">
-                                <label for="contact-email">Email Address</label>
-                                <input type="email" id="contact-email" placeholder="example@domain.com" required>
-                                <span class="error-msg" id="err-contact-email">Please enter a valid email address.</span>
-                            </div>
+                    <!-- Poster QR Download Card -->
+                    <div class="poster-qr-card glass-card">
+                        <div class="poster-qr-meta">
+                            <h4>Poster Scan Access</h4>
+                            <p>Scanning this QR code on a physical flyer loads this registration web portal immediately.</p>
+                            <button class="cta-btn secondary-btn btn-sm" id="download-qr-btn"><i data-lucide="download"></i> Download QR</button>
+                        </div>
+                        <div class="poster-qr-graphic">
+                            <svg viewBox="0 0 100 100" class="qr-vector-main" id="poster-qr-svg">
+                                <rect width="100" height="100" fill="#ffffff"/>
+                                <!-- Corners -->
+                                <rect x="5" y="5" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
+                                <rect x="9.5" y="9.5" width="13" height="13" fill="#ffffff"/>
+                                <rect x="12" y="12" width="8" height="8" fill="#0b0f19"/>
 
-                            <div class="form-group">
-                                <label for="contact-msg">Message</label>
-                                <textarea id="contact-msg" rows="5" placeholder="How can Mr. S. Deepak help you?" required minlength="10"></textarea>
-                                <span class="error-msg" id="err-contact-msg">Message must be at least 10 characters.</span>
-                            </div>
+                                <rect x="73" y="5" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
+                                <rect x="77.5" y="9.5" width="13" height="13" fill="#ffffff"/>
+                                <rect x="80" y="12" width="8" height="8" fill="#0b0f19"/>
 
-                            <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Send Message</button>
-                        </form>
+                                <rect x="5" y="73" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
+                                <rect x="9.5" y="77.5" width="13" height="13" fill="#ffffff"/>
+                                <rect x="12" y="80" width="8" height="8" fill="#0b0f19"/>
+
+                                <!-- Internal pattern nodes -->
+                                <rect x="35" y="10" width="5" height="15" fill="#0b0f19"/>
+                                <rect x="45" y="5" width="10" height="5" fill="#0b0f19"/>
+                                <rect x="60" y="15" width="5" height="15" fill="#0b0f19"/>
+                                <rect x="10" y="35" width="15" height="5" fill="#0b0f19"/>
+                                <rect x="5" y="50" width="15" height="5" fill="#0b0f19"/>
+                                <rect x="35" y="35" width="30" height="5" fill="#0b0f19"/>
+                                <rect x="40" y="45" width="10" height="20" fill="#0b0f19"/>
+                                <rect x="60" y="50" width="10" height="5" fill="#0b0f19"/>
+                                <rect x="75" y="35" width="20" height="5" fill="#0b0f19"/>
+                                <rect x="85" y="45" width="5" height="20" fill="#0b0f19"/>
+                                <rect x="35" y="75" width="5" height="15" fill="#0b0f19"/>
+                                <rect x="45" y="85" width="20" height="5" fill="#0b0f19"/>
+                                <rect x="60" y="70" width="10" height="5" fill="#0b0f19"/>
+                                <rect x="75" y="75" width="20" height="20" fill="#0b0f19"/>
+                                <rect x="80" y="80" width="10" height="10" fill="#ffffff"/>
+                            </svg>
+                        </div>
                     </div>
 
                 </div>
@@ -1109,7 +1074,7 @@
                 <div class="brand-logo">
                     <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
                     <div class="logo-text">
-                        <span class="logo-title">BCE NETWORKING</span>
+                        <span class="logo-title">CCNA PROGRAM BCE</span>
                         <span class="logo-subtitle">Center of Excellence</span>
                     </div>
                 </div>
@@ -1137,7 +1102,7 @@
 
         <div class="footer-bottom">
             <div class="section-container footer-bottom-layout">
-                <p>&copy; 2026 Bahubali College of Engineering. All rights reserved. | Developed for CoE Center of Excellence for Networking.</p>
+                <p>&copy; 2026 Bahubali College of Engineering. All rights reserved. | CCNA Program BCE.</p>
                 <div class="sec-badges">
                     <span><i data-lucide="shield-check" class="icon-xs"></i> PCI-DSS Encrypted</span>
                     <span><i data-lucide="lock" class="icon-xs"></i> SSL Verified</span>
@@ -1145,6 +1110,150 @@
             </div>
         </div>
     </footer>
+
+    <!-- Mentor Login Modal -->
+    <div class="secure-loader-overlay" id="mentor-login-modal">
+        <div class="loader-content glass-card animate-scale" style="max-width: 420px; border-top-color: var(--accent-color);">
+            <div class="modal-header-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="shield-alert" class="text-accent" style="width: 24px; height: 24px;"></i>
+                    <h3 style="font-size: 1.15rem; font-family: 'Outfit';">Mentor Authorization</h3>
+                </div>
+                <button id="close-login-btn" style="background: none; border: none; cursor: pointer; color: var(--text-muted);"><i data-lucide="x"></i></button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; text-align: left; width: 100%;">Authorized Faculty Access Only (Deepak sir). Please enter credentials to unlock the analytics registry.</p>
+            <form id="mentor-login-form" style="width: 100%; text-align: left;" novalidate>
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="login-username">Username</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user" class="input-icon"></i>
+                        <input type="text" id="login-username" placeholder="deepak.bce" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="key" class="input-icon"></i>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Unlock Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mentor Dashboard Panel (Fullscreen Glass Overlay) -->
+    <div class="mentor-dashboard-panel" id="mentor-dashboard">
+        <div class="dashboard-header glass-card">
+            <div class="brand-logo">
+                <img src="assets/logo.png" alt="BCE Logo" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-title">CCNA PROGRAM BCE</span>
+                    <span class="logo-subtitle">Mentor Dashboard</span>
+                </div>
+            </div>
+            <div class="dashboard-header-actions">
+                <span class="user-greeting"><i data-lucide="user-check"></i> Welcome, Mr. S. Deepak</span>
+                <button id="mentor-logout-btn" class="cta-btn secondary-btn btn-sm"><i data-lucide="log-out"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="dashboard-container section-container">
+            <!-- Analytics Cards Grid -->
+            <div class="analytics-grid">
+                <div class="analytics-card glass-card">
+                    <div class="card-icon blue"><i data-lucide="users"></i></div>
+                    <div class="card-data">
+                        <span class="metric-num" id="stat-registered">0</span>
+                        <span class="metric-lbl">Total Registered</span>
+                    </div>
+                </div>
+                <div class="analytics-card glass-card">
+                    <div class="card-icon green"><i data-lucide="badge-check"></i></div>
+                    <div class="card-data">
+                        <span class="metric-num" id="stat-paid">0</span>
+                        <span class="metric-lbl">Fees Paid</span>
+                    </div>
+                </div>
+                <div class="analytics-card glass-card">
+                    <div class="card-icon yellow"><i data-lucide="alert-triangle"></i></div>
+                    <div class="card-data">
+                        <span class="metric-num" id="stat-unpaid">0</span>
+                        <span class="metric-lbl">Pending Payment</span>
+                    </div>
+                </div>
+                <div class="analytics-card glass-card">
+                    <div class="card-icon purple"><i data-lucide="message-square"></i></div>
+                    <div class="card-data">
+                        <span class="metric-num" id="stat-inquiries">0</span>
+                        <span class="metric-lbl">Course Inquiries</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab content tables -->
+            <div class="dashboard-content-grid">
+                
+                <!-- Registrations Registry Card -->
+                <div class="registry-card glass-card">
+                    <div class="registry-header">
+                        <h3>Student Admission Registry</h3>
+                        <div class="registry-controls">
+                            <div class="search-box">
+                                <i data-lucide="search" class="search-icon"></i>
+                                <input type="text" id="db-search" placeholder="Search name or college...">
+                            </div>
+                            <select id="db-filter" class="table-filter-select">
+                                <option value="all">Show All</option>
+                                <option value="paid">Paid Only</option>
+                                <option value="unpaid">Unpaid Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-scroll-wrapper">
+                        <table class="db-table" id="registrations-table">
+                            <thead>
+                                <tr>
+                                    <th>Ref ID</th>
+                                    <th>Candidate Name</th>
+                                    <th>Contact Info</th>
+                                    <th>Role & College</th>
+                                    <th>Status</th>
+                                    <th>Date Added</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registrations-tbody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Inquiries Card -->
+                <div class="registry-card glass-card">
+                    <div class="registry-header">
+                        <h3>General Contact Messages</h3>
+                    </div>
+                    <div class="table-scroll-wrapper">
+                        <table class="db-table" id="inquiries-table">
+                            <thead>
+                                <tr>
+                                    <th>Sender Name</th>
+                                    <th>Email Address</th>
+                                    <th>Inquiry Message</th>
+                                    <th>Sent Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inquiries-tbody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Secure Modal Loader (Simulating Payment Network Check) -->
     <div class="secure-loader-overlay" id="payment-loader">
