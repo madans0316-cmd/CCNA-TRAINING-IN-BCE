@@ -14,9 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.warn('Service Worker registration failed:', err));
     }
 
-    // Helper to resolve API URLs (enables loading via local file:// protocol)
+    // Helper to resolve API URLs (enables loading via local file:// protocol and Capacitor shell)
     const getApiUrl = (path) => {
-        if (window.location.protocol === 'file:') {
+        // If running inside Capacitor mobile shell or local files, point to live hosted Vercel backend
+        if (window.Capacitor || window.location.protocol === 'file:' || 
+            (window.location.hostname === 'localhost' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
+            return 'https://ccna-training-in-bce.vercel.app' + path;
+        }
+        // If developer is working locally on desktop PC, fall back to local server
+        if (window.location.protocol === 'http:' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
             return 'http://127.0.0.1:5000' + path;
         }
         return path;
