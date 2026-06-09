@@ -7,6 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
 
+    // Register Service Worker for PWA (Offline & Install support)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered successfully with scope:', reg.scope))
+            .catch(err => console.warn('Service Worker registration failed:', err));
+    }
+
     // Helper to resolve API URLs (enables loading via local file:// protocol)
     const getApiUrl = (path) => {
         if (window.location.protocol === 'file:') {
@@ -901,4 +908,110 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search and Filter Listeners
     dbSearch.addEventListener('input', renderTables);
     dbFilter.addEventListener('change', renderTables);
+
+    /* ==========================================================================
+       PWA MASTERPIECE UI - OFFLINE DETECTION & CUSTOM INSTALL PROMPT
+       ========================================================================== */
+    const offlineNotification = document.getElementById('offline-notification');
+    const pwaInstallBanner = document.getElementById('pwa-install-banner');
+    const pwaInstallBtn = document.getElementById('pwa-install-btn');
+    const pwaCloseBtn = document.getElementById('pwa-close-btn');
+    const drawerInstallBtn = document.getElementById('drawer-install-btn');
+
+    // Offline / Online Status Detection
+    function updateOnlineStatus() {
+        const isOffline = !navigator.onLine;
+        if (isOffline) {
+            offlineNotification.classList.add('active');
+            showToast('You are currently offline. Registration form is disabled.', 'error');
+        } else {
+            if (offlineNotification.classList.contains('active')) {
+                offlineNotification.classList.remove('active');
+                showToast('You are back online!', 'success');
+            }
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    
+    // Check initial online status
+    if (!navigator.onLine) {
+        offlineNotification.classList.add('active');
+    }
+
+    // Intercept form submissions when offline
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            if (!navigator.onLine) {
+                e.preventDefault();
+                e.stopPropagation();
+                showToast('Cannot submit form while offline. Please connect to the internet.', 'error');
+            }
+        }, true); // Use capturing to intercept early
+    });
+
+    // Custom PWA Install prompt handling
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent default browser install dialog
+        e.preventDefault();
+        // Store event for later trigger
+        deferredPrompt = e;
+        
+        // Show PWA floating banner if not previously dismissed
+        const isDismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
+        if (!isDismissed && pwaInstallBanner) {
+            pwaInstallBanner.classList.add('active');
+        }
+
+        // Show the nav drawer install link
+        if (drawerInstallBtn) {
+            drawerInstallBtn.style.display = 'flex';
+        }
+    });
+
+    // Handle Install Actions
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        
+        // Trigger install prompt
+        deferredPrompt.prompt();
+        
+        // Await user response
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to install prompt: ${outcome}`);
+        
+        // Reset deferred prompt
+        deferredPrompt = null;
+        
+        // Hide install elements
+        if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
+        if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
+    };
+
+    if (pwaInstallBtn) pwaInstallBtn.addEventListener('click', handleInstallClick);
+    if (drawerInstallBtn) drawerInstallBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleInstallClick();
+    });
+
+    // Handle Close / Dismiss
+    if (pwaCloseBtn && pwaInstallBanner) {
+        pwaCloseBtn.addEventListener('click', () => {
+            pwaInstallBanner.classList.remove('active');
+            // Store dismissal preference so we don't annoy the user
+            localStorage.setItem('pwa-install-dismissed', 'true');
+        });
+    }
+
+    // Reset dismissal preference on app load if installed successfully
+    window.addEventListener('appinstalled', (evt) => {
+        console.log('CCNA Program BCE App installed successfully!');
+        if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
+        if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
+        showToast('CCNA Program App installed successfully!', 'success');
+    });
 });
