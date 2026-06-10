@@ -1,0 +1,11 @@
+android/
+www/
+node_modules/
+.git/
+.gradle/
+*.db
+*.log
+database.db
+test_write.db
+test_cwd.txt
+test_tmp.txt

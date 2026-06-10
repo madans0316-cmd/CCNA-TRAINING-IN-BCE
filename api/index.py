@@ -8,16 +8,8 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 # Configuration
 DATABASE = 'database.db'
 
-# Robust read-only filesystem check (e.g. for Vercel serverless functions)
-try:
-    test_db = 'test_write.db'
-    test_conn = sqlite3.connect(test_db)
-    test_conn.execute("CREATE TABLE IF NOT EXISTS test (id INTEGER)")
-    test_conn.commit()
-    test_conn.close()
-    if os.path.exists(test_db):
-        os.remove(test_db)
-except (sqlite3.OperationalError, OSError):
+# Force /tmp/database.db in Vercel/Serverless runtime environments
+if os.environ.get('VERCEL') is not None or os.environ.get('AWS_LAMBDA_FUNCTION_NAME') is not None:
     DATABASE = '/tmp/database.db'
 
 MENTOR_USER = 'deepak.bce'
@@ -26,7 +18,11 @@ MENTOR_PASS = 'ccna2026'
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        try:
+            db = g._database = sqlite3.connect(DATABASE)
+        except sqlite3.OperationalError:
+            # Absolute fallback to /tmp/database.db if default path is read-only
+            db = g._database = sqlite3.connect('/tmp/database.db')
         db.row_factory = sqlite3.Row
     return db
 

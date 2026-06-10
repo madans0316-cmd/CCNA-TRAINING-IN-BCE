@@ -14,7 +14,11 @@ INVALID_PAYLOAD = "Invalid payload"
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        try:
+            db = g._database = sqlite3.connect(DATABASE)
+        except sqlite3.OperationalError:
+            # Fallback to /tmp/database.db if default path is read-only
+            db = g._database = sqlite3.connect('/tmp/database.db')
         db.row_factory = sqlite3.Row
     return db
 
