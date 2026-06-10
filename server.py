@@ -59,6 +59,11 @@ def init_db():
         
         db.commit()
 
+        # Auto-seed if database is empty
+        cursor.execute("SELECT COUNT(*) FROM registrations")
+        if cursor.fetchone()[0] == 0:
+            seed_mock_data(db)
+
 def seed_mock_data(db):
     cursor = db.cursor()
     print("Database empty. Seeding mock registrations and inquiries...")

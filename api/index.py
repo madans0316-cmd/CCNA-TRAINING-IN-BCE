@@ -7,7 +7,17 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 
 # Configuration
 DATABASE = 'database.db'
-if os.environ.get('VERCEL') == '1' or os.environ.get('VERCEL') is not None:
+
+# Robust read-only filesystem check (e.g. for Vercel serverless functions)
+try:
+    test_db = 'test_write.db'
+    test_conn = sqlite3.connect(test_db)
+    test_conn.execute("CREATE TABLE IF NOT EXISTS test (id INTEGER)")
+    test_conn.commit()
+    test_conn.close()
+    if os.path.exists(test_db):
+        os.remove(test_db)
+except (sqlite3.OperationalError, OSError):
     DATABASE = '/tmp/database.db'
 
 MENTOR_USER = 'deepak.bce'
@@ -60,6 +70,11 @@ def init_db():
         ''')
         
         db.commit()
+
+        # Auto-seed if database is empty
+        cursor.execute("SELECT COUNT(*) FROM registrations")
+        if cursor.fetchone()[0] == 0:
+            seed_mock_data(db)
 
 def seed_mock_data(db):
     cursor = db.cursor()
