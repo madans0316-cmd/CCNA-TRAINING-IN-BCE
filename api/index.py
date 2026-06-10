@@ -6,11 +6,7 @@ from flask import Flask, request, jsonify, g
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 # Configuration
-DATABASE = 'database.db'
-
-# Force /tmp/database.db in Vercel/Serverless runtime environments
-if os.environ.get('VERCEL') is not None or os.environ.get('AWS_LAMBDA_FUNCTION_NAME') is not None:
-    DATABASE = '/tmp/database.db'
+DATABASE = '/tmp/database.db'
 
 MENTOR_USER = 'deepak.bce'
 MENTOR_PASS = 'ccna2026'
