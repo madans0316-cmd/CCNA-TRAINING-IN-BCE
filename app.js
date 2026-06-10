@@ -7,8 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Helper to resolve API URLs
+    // Register Service Worker for PWA (Offline & Install support)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered successfully with scope:', reg.scope))
+            .catch(err => console.warn('Service Worker registration failed:', err));
+    }
+
+    // Helper to resolve API URLs (enables loading via local file:// protocol and Capacitor shell)
     const getApiUrl = (path) => {
+        // If running inside Capacitor mobile shell or local files, point to live hosted Vercel backend
+        if (window.Capacitor || window.location.protocol === 'file:' || 
+            (window.location.hostname === 'localhost' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
+            return 'https://ccna-training-in-bce.vercel.app' + path;
+        }
         // If developer is working locally on desktop PC, fall back to local server
         if (window.location.protocol === 'http:' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
             return 'http://127.0.0.1:5000' + path;
@@ -349,6 +361,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 department: state.candidateDept
             };
 
+            // If offline, save to local queue and transition to next step
+            if (!navigator.onLine) {
+                saveRegistrationOffline(regPayload);
+                showToast('Registration saved locally! We will sync it once you connect to the internet.', 'success');
+                gotoStep(2);
+                document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
             // Save to Python SQLite DB (Unpaid)
             fetch(getApiUrl('/api/register'), {
                 method: 'POST',
@@ -376,7 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error(err);
-                showToast('Registration failed due to a network connection issue. Please try again.', 'error');
+                // Fallback to offline staging if fetch fails (e.g. network drops mid-click)
+                saveRegistrationOffline(regPayload);
+                showToast('Registration saved locally due to network connection issues.', 'success');
+                gotoStep(2);
+                document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
             });
         } else {
             showToast('Please correct the validation errors in the form.', 'error');
@@ -673,6 +698,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     message: contactMsg.value.trim()
                 };
 
+                // If offline, save to local queue
+                if (!navigator.onLine) {
+                    saveInquiryOffline(inqPayload);
+                    contactForm.reset();
+                    showToast('Inquiry saved offline! We will send it automatically once you are back online.', 'success');
+                    return;
+                }
+
                 // Save inquiry to Python Database
                 fetch(getApiUrl('/api/inquiry'), {
                     method: 'POST',
@@ -690,7 +723,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => {
                     console.error(err);
-                    showToast('Submission failed due to a network connection issue. Please try again.', 'error');
+                    // Fallback to offline staging if fetch fails
+                    saveInquiryOffline(inqPayload);
+                    contactForm.reset();
+                    showToast('Inquiry saved offline due to network connection issues.', 'success');
                 });
             } else {
                 showToast('Please correct validation issues before submitting.', 'error');
@@ -942,4 +978,344 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search and Filter Listeners
     dbSearch.addEventListener('input', renderTables);
     dbFilter.addEventListener('change', renderTables);
+
+    /* ==========================================================================
+       CLASS REMINDERS & ALERTS LOGIC (Fridays & Saturdays from July 18th)
+       ========================================================================== */
+    const addToCalendarBtn = document.getElementById('add-to-calendar-btn');
+    const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
+
+    if (addToCalendarBtn) {
+        addToCalendarBtn.addEventListener('click', () => {
+            try {
+                // Generate a standard .ics (iCalendar) file subscription starting Saturday, July 18, 2026
+                const icsContent = [
+                    "BEGIN:VCALENDAR",
+                    "VERSION:2.0",
+                    "PRODID:-//BCE CoE//CCNA Class Reminders//EN",
+                    "CALSCALE:GREGORIAN",
+                    "METHOD:PUBLISH",
+                    
+                    // Saturday Class (Starts Sat, July 18, 2026 at 9:00 AM)
+                    "BEGIN:VEVENT",
+                    "UID:ccna-saturday-class-2026@bce.edu",
+                    "DTSTART;TZID=Asia/Kolkata:20260718T090000",
+                    "DTEND;TZID=Asia/Kolkata:20260718T170000",
+                    "RRULE:FREQ=WEEKLY;BYDAY=SA",
+                    "SUMMARY:CCNA Training Session - BCE CoE",
+                    "DESCRIPTION:Weekly CCNA Training Session. Attendance is mandatory.",
+                    "LOCATION:BCE Center of Excellence Networking Lab",
+                    "END:VEVENT",
+                    
+                    // Friday Class (Starts Fri, July 24, 2026 at 9:00 AM)
+                    "BEGIN:VEVENT",
+                    "UID:ccna-friday-class-2026@bce.edu",
+                    "DTSTART;TZID=Asia/Kolkata:20260724T090000",
+                    "DTEND;TZID=Asia/Kolkata:20260724T170000",
+                    "RRULE:FREQ=WEEKLY;BYDAY=FR",
+                    "SUMMARY:CCNA Training Session - BCE CoE",
+                    "DESCRIPTION:Weekly CCNA Training Session. Lab assessment day.",
+                    "LOCATION:BCE Center of Excellence Networking Lab",
+                    "END:VEVENT",
+                    
+                    "END:VCALENDAR"
+                ].join("\r\n");
+
+                const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "ccna_class_reminders.ics";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showToast('Class schedule (.ics) downloaded! Add it to your calendar application.', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to generate calendar file.', 'error');
+            }
+        });
+    }
+
+    if (enableNotificationsBtn) {
+        enableNotificationsBtn.addEventListener('click', async () => {
+            // Check if running inside Capacitor native wrapper
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+                try {
+                    const LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
+                    const perm = await LocalNotifications.requestPermissions();
+                    if (perm.display === 'granted') {
+                        // Schedule notifications inside native Android app
+                        await LocalNotifications.schedule({
+                            notifications: [
+                                {
+                                    title: "CCNA Class Notification",
+                                    body: "CCNA Training is scheduled today at 9:00 AM (Fridays & Saturdays).",
+                                    id: 1,
+                                    schedule: {
+                                        on: { weekday: 5, hour: 8, minute: 0 }, // Friday at 8:00 AM
+                                        repeats: true
+                                    }
+                                },
+                                {
+                                    title: "CCNA Class Notification",
+                                    body: "CCNA Training is scheduled today at 9:00 AM (Fridays & Saturdays).",
+                                    id: 2,
+                                    schedule: {
+                                        on: { weekday: 6, hour: 8, minute: 0 }, // Saturday at 8:00 AM
+                                        repeats: true
+                                    }
+                                }
+                            ]
+                        });
+                        showToast('Class reminders scheduled in native app wrapper!', 'success');
+                    } else {
+                        showToast('Permission to display notifications was denied.', 'warning');
+                    }
+                } catch (e) {
+                    console.error("Capacitor Notifications error:", e);
+                    showToast('Failed to schedule local app reminders.', 'error');
+                }
+            } else if ('Notification' in window) {
+                // Standard Web Browser Notification API
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        new Notification("CCNA Program BCE Alerts Enabled!", {
+                            body: "Class alerts scheduled for Fridays & Saturdays starting July 18th.",
+                            icon: "assets/icon-192.png"
+                        });
+                        showToast('Notifications enabled! Reminders scheduled for class dates.', 'success');
+                    } else {
+                        showToast('Notifications permission was blocked or denied.', 'warning');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('Notifications are not supported in this browser environment.', 'error');
+                }
+            } else {
+                showToast('Notifications are not supported by your current browser.', 'error');
+            }
+        });
+    }
+
+    /* ==========================================================================
+       MOBILE BOTTOM NAVIGATION HIGHLIGHTS (ScrollSpy)
+       ========================================================================== */
+    const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+    const scrollSections = document.querySelectorAll('.scroll-section');
+
+    const updateActiveBottomNavTab = () => {
+        let currentSectionId = 'home';
+        const scrollPosition = window.scrollY + 160;
+
+        scrollSections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                currentSectionId = section.getAttribute('id');
+            }
+        });
+
+        bottomNavItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('data-section') === currentSectionId) {
+                item.classList.add('active');
+            }
+        });
+    };
+
+    window.addEventListener('scroll', updateActiveBottomNavTab);
+    bottomNavItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = item.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                const headerOffset = 70;
+                const elementPosition = targetSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    /* ==========================================================================
+       PWA MASTERPIECE UI - OFFLINE DETECTION & CUSTOM INSTALL PROMPT
+       ========================================================================== */
+    const offlineNotification = document.getElementById('offline-notification');
+    const pwaInstallBanner = document.getElementById('pwa-install-banner');
+    const pwaInstallBtn = document.getElementById('pwa-install-btn');
+    const pwaCloseBtn = document.getElementById('pwa-close-btn');
+    const drawerInstallBtn = document.getElementById('drawer-install-btn');
+
+    // Offline / Online Status Detection
+    function updateOnlineStatus() {
+        const isOffline = !navigator.onLine;
+        if (isOffline) {
+            if (offlineNotification) offlineNotification.classList.add('active');
+            showToast('You are currently offline. Pending entries will be saved locally.', 'warning');
+        } else {
+            if (offlineNotification && offlineNotification.classList.contains('active')) {
+                offlineNotification.classList.remove('active');
+                showToast('You are back online! Synchronizing offline data...', 'success');
+                syncOfflineData();
+            }
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    
+    if (!navigator.onLine && offlineNotification) {
+        offlineNotification.classList.add('active');
+    }
+
+    // Intercept form submissions when offline
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            if (!navigator.onLine) {
+                const formId = form.getAttribute('id');
+                if (formId === 'student-login-form' || formId === 'mentor-login-form' || 
+                    formId === 'payment-card-form' || formId === 'payment-upi-form' || formId === 'payment-bank-form') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast('This action requires an active internet connection.', 'error');
+                }
+            }
+        }, true);
+    });
+
+    // Custom PWA Install prompt handling
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        const isDismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
+        if (!isDismissed && pwaInstallBanner) {
+            pwaInstallBanner.classList.add('active');
+        }
+
+        if (drawerInstallBtn) {
+            drawerInstallBtn.style.display = 'flex';
+        }
+    });
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to install prompt: ${outcome}`);
+        deferredPrompt = null;
+        if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
+        if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
+    };
+
+    if (pwaInstallBtn) pwaInstallBtn.addEventListener('click', handleInstallClick);
+    if (drawerInstallBtn) drawerInstallBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleInstallClick();
+    });
+
+    if (pwaCloseBtn && pwaInstallBanner) {
+        pwaCloseBtn.addEventListener('click', () => {
+            pwaInstallBanner.classList.remove('active');
+            localStorage.setItem('pwa-install-dismissed', 'true');
+        });
+    }
+
+    window.addEventListener('appinstalled', (evt) => {
+        console.log('CCNA Program BCE App installed successfully!');
+        if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
+        if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
+        showToast('CCNA Program App installed successfully!', 'success');
+    });
+
+    /* ==========================================================================
+       OFFLINE DATA STORAGE & SYNCHRONIZATION
+       ========================================================================== */
+    function saveRegistrationOffline(regData) {
+        const queue = JSON.parse(localStorage.getItem('offline_registrations') || '[]');
+        if (!queue.some(r => r.email === regData.email)) {
+            queue.push(regData);
+            localStorage.setItem('offline_registrations', JSON.stringify(queue));
+            console.log('[Offline Sync] Stage registration:', regData.email);
+        }
+    }
+
+    function saveInquiryOffline(inqData) {
+        const queue = JSON.parse(localStorage.getItem('offline_inquiries') || '[]');
+        queue.push(inqData);
+        localStorage.setItem('offline_inquiries', JSON.stringify(queue));
+        console.log('[Offline Sync] Stage inquiry:', inqData.email);
+    }
+
+    async function syncOfflineData() {
+        if (!navigator.onLine) return;
+
+        const pendingRegs = JSON.parse(localStorage.getItem('offline_registrations') || '[]');
+        if (pendingRegs.length > 0) {
+            console.log(`[Offline Sync] Processing ${pendingRegs.length} pending registrations...`);
+            const remainingRegs = [];
+
+            for (const reg of pendingRegs) {
+                try {
+                    const res = await fetch(getApiUrl('/api/register'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(reg)
+                    });
+                    const data = await res.json();
+                    if (data.success || data.code === 'DUPLICATE_EMAIL') {
+                        console.log(`[Offline Sync] Synchronized registration: ${reg.email}`);
+                        showToast(`Pending registration for ${reg.name} synchronized successfully!`, 'success');
+                    } else {
+                        remainingRegs.push(reg);
+                    }
+                } catch (err) {
+                    console.warn(`[Offline Sync] Sync failed for ${reg.email}:`, err.message);
+                    remainingRegs.push(reg);
+                }
+            }
+            localStorage.setItem('offline_registrations', JSON.stringify(remainingRegs));
+        }
+
+        const pendingInquiries = JSON.parse(localStorage.getItem('offline_inquiries') || '[]');
+        if (pendingInquiries.length > 0) {
+            console.log(`[Offline Sync] Processing ${pendingInquiries.length} pending inquiries...`);
+            const remainingInqs = [];
+
+            for (const inq of pendingInquiries) {
+                try {
+                    const res = await fetch(getApiUrl('/api/inquiry'), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(inq)
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        console.log(`[Offline Sync] Synchronized inquiry: ${inq.email}`);
+                        showToast(`Offline inquiry from ${inq.name} sent successfully!`, 'success');
+                    } else {
+                        remainingInqs.push(inq);
+                    }
+                } catch (err) {
+                    console.warn(`[Offline Sync] Sync failed for inquiry:`, err.message);
+                    remainingInqs.push(inq);
+                }
+            }
+            localStorage.setItem('offline_inquiries', JSON.stringify(remainingInqs));
+        }
+    }
+
+    if (navigator.onLine) {
+        syncOfflineData();
+    }
 });

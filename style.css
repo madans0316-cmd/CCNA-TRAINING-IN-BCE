@@ -2913,4 +2913,328 @@ label {
     color: var(--text-primary);
 }
 
+/* ==========================================================================
+   PWA & MOBILE APP INTERACTION STYLES
+   ========================================================================== */
+
+/* Offline Status Indicator */
+.offline-notification {
+    position: fixed;
+    bottom: -150px;
+    right: 24px;
+    max-width: 380px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 9999;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(239, 68, 68, 0.15);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    pointer-events: auto;
+}
+
+.offline-notification.active {
+    bottom: 24px;
+}
+
+.offline-icon {
+    width: 28px;
+    height: 28px;
+    color: #ef4444;
+    animation: pulse-red 2.5s infinite;
+}
+
+@keyframes pulse-red {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.offline-text h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+}
+
+.offline-text p {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+/* Custom PWA Install Banner */
+.pwa-install-banner {
+    position: fixed;
+    bottom: -200px;
+    left: 24px;
+    max-width: 420px;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 9998;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.pwa-install-banner.active {
+    bottom: 24px;
+}
+
+.install-logo-wrapper {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.install-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.install-info {
+    flex-grow: 1;
+}
+
+.install-info h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 3px;
+}
+
+.install-info p {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    line-height: 1.35;
+}
+
+.install-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.install-actions .btn-sm {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.close-btn-sm {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-btn-sm:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile Responsiveness for Notification & Banners */
+@media (max-width: 768px) {
+    .offline-notification {
+        left: 16px;
+        right: 16px;
+        bottom: -150px;
+        max-width: none;
+    }
+    
+    .offline-notification.active {
+        bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .pwa-install-banner {
+        left: 16px;
+        right: 16px;
+        bottom: -200px;
+        max-width: none;
+        flex-direction: row;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .pwa-install-banner.active {
+        bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    
+    .install-logo-wrapper {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .install-info h4 {
+        font-size: 0.9rem;
+    }
+    
+    .install-info p {
+        font-size: 0.72rem;
+    }
+}
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION & STANDALONE PWA STYLES
+   ========================================================================== */
+.mobile-bottom-nav {
+    display: none; /* Hidden by default on desktop */
+}
+
+@media (max-width: 768px) {
+    /* Safe Area body space to prevent content overlap with bottom nav bar */
+    body {
+        padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(64px + env(safe-area-inset-bottom, 0px));
+        background: rgba(15, 23, 42, 0.9);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+        z-index: 999;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        height: 100%;
+        color: #64748b;
+        text-decoration: none;
+        font-size: 0.7rem;
+        font-weight: 500;
+        gap: 4px;
+        transition: all 0.25s ease;
+        position: relative;
+    }
+
+    .bottom-nav-item i {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .bottom-nav-item span {
+        opacity: 0.85;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Active state styling with cyan glows */
+    .bottom-nav-item.active {
+        color: #60a5fa;
+    }
+
+    .bottom-nav-item.active i {
+        transform: translateY(-2px) scale(1.1);
+        color: #60a5fa;
+        filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.5));
+    }
+
+    .bottom-nav-item.active span {
+        font-weight: 700;
+        color: #60a5fa;
+    }
+
+    /* Subtle active indicator dot */
+    .bottom-nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: 6px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: #3b82f6;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.25s ease;
+    }
+
+    .bottom-nav-item.active::after {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 3px #3b82f6);
+    }
+
+    /* Shift PWA install banner and offline indicator above bottom nav */
+    .pwa-install-banner.active {
+        bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .offline-notification.active {
+        bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* Standalone PWA adjustments for full screen immersion */
+@media (display-mode: standalone) {
+    .main-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        border-radius: 0;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        padding-top: env(safe-area-inset-top, 12px) !important;
+        background: rgba(15, 23, 42, 0.92) !important;
+    }
+
+    main {
+        padding-top: calc(72px + env(safe-area-inset-top, 24px)) !important;
+    }
+}
+
+/* Reminders Card Bell Animation */
+@keyframes pulse-bell-ring {
+    0%, 100% { transform: rotate(0); }
+    15% { transform: rotate(10deg); }
+    30% { transform: rotate(-10deg); }
+    45% { transform: rotate(5deg); }
+    60% { transform: rotate(-5deg); }
+    75% { transform: rotate(0); }
+}
+
+.pulse-bell {
+    display: inline-block;
+    animation: pulse-bell-ring 4s infinite ease-in-out;
+}
+
 

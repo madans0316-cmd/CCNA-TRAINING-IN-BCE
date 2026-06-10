@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCNA Program BCE | Bahubali College of Engineering</title>
     
+    <!-- PWA Integration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    
+    <!-- iOS Safari PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CCNA BCE">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    
     <!-- Meta Descriptions for SEO -->
     <meta name="description" content="Enroll in the CCNA Certification Training Program at Bahubali College of Engineering. 150 hours of extensive offline practical labs, network fundamentals, IPv4/IPv6, subnetting, routing, switching, and automation. Become CCNA ready!">
     <meta name="keywords" content="CCNA, networking training, Cisco certification, Bahubali College of Engineering, practical networking labs, CCNA offline course, network security, subnetting">
@@ -94,6 +104,7 @@
             <a href="#faq" class="mobile-link">FAQs</a>
             <a href="#contact" class="mobile-link">Contact</a>
             <a href="#" id="mobile-mentor-btn" class="mobile-link"><i data-lucide="lock" class="icon-xs align-middle-mr4"></i> Mentor Portal</a>
+            <a href="#" id="drawer-install-btn" class="mobile-link" style="display: none;"><i data-lucide="download" class="icon-xs align-middle-mr4"></i> Install App</a>
             <a href="#register" class="mobile-link mobile-cta">Register Now</a>
         </nav>
     </div>
@@ -569,6 +580,23 @@
                                     <p>Limited to 40 Seats per batch to ensure dedicated rack access for all candidates.</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Reminders & Alerts Card -->
+                    <div class="schedule-card glass-card reminders-card">
+                        <div class="card-icon"><i data-lucide="bell-ring" class="pulse-bell"></i></div>
+                        <h3>Class Calendar & Reminders</h3>
+                        <p class="card-desc-text" style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                            Synchronize your class timings (Fridays & Saturdays starting July 18th) directly with your mobile or desktop device.
+                        </p>
+                        <div class="reminder-buttons" style="display: flex; flex-direction: column; gap: 10px;">
+                            <button id="add-to-calendar-btn" class="cta-btn primary-btn btn-sm" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                                <i data-lucide="calendar"></i> Sync Calendar (.ICS)
+                            </button>
+                            <button id="enable-notifications-btn" class="cta-btn secondary-btn btn-sm" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                                <i data-lucide="bell"></i> Enable Web Alerts
+                            </button>
                         </div>
                     </div>
 
@@ -1273,6 +1301,54 @@
         <i data-lucide="info" class="toast-icon" id="toast-icon"></i>
         <span class="toast-message" id="toast-message">Message sent successfully!</span>
     </div>
+    <!-- PWA Install Banner -->
+    <div class="pwa-install-banner" id="pwa-install-banner">
+        <div class="install-logo-wrapper">
+            <img src="assets/icon-192.png" alt="App Icon" class="install-logo">
+        </div>
+        <div class="install-info">
+            <h4>CCNA Program App</h4>
+            <p>Install the app for quick, offline-friendly access.</p>
+        </div>
+        <div class="install-actions">
+            <button id="pwa-install-btn" class="cta-btn primary-btn btn-sm">Install</button>
+            <button id="pwa-close-btn" class="close-btn-sm" aria-label="Dismiss"><i data-lucide="x"></i></button>
+        </div>
+    </div>
+
+    <!-- Offline Indicator Banner -->
+    <div class="offline-notification" id="offline-notification">
+        <i data-lucide="wifi-off" class="offline-icon"></i>
+        <div class="offline-text">
+            <h4>Connection Lost</h4>
+            <p>You are offline. Registration and database access are limited.</p>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar for Mobile App Mode -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <a href="#home" class="bottom-nav-item active" data-section="home">
+            <i data-lucide="home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#about" class="bottom-nav-item" data-section="about">
+            <i data-lucide="info"></i>
+            <span>About</span>
+        </a>
+        <a href="#curriculum" class="bottom-nav-item" data-section="curriculum">
+            <i data-lucide="book-open"></i>
+            <span>Syllabus</span>
+        </a>
+        <a href="#schedule" class="bottom-nav-item" data-section="schedule">
+            <i data-lucide="calendar"></i>
+            <span>Schedule</span>
+        </a>
+        <a href="#register" class="bottom-nav-item" data-section="register">
+            <i data-lucide="user-plus"></i>
+            <span>Register</span>
+        </a>
+    </nav>
+
     <!-- Custom Script -->
     <script src="app.js"></script>
 </body>
