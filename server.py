@@ -20,6 +20,15 @@ def get_db():
             # Fallback to /tmp/database.db if default path is read-only
             db = g._database = sqlite3.connect('/tmp/database.db')
         db.row_factory = sqlite3.Row
+        
+        # Lazy check and initialization of tables
+        try:
+            cursor = db.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='registrations'")
+            if not cursor.fetchone():
+                init_db_with_connection(db)
+        except Exception as e:
+            print(f"Database lazy-init error: {e}", flush=True)
     return db
 
 @app.teardown_appcontext
@@ -28,45 +37,43 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+def init_db_with_connection(db):
+    cursor = db.cursor()
+    # Create Registrations Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS registrations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reg_id TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            role TEXT NOT NULL,
+            college TEXT NOT NULL,
+            department TEXT NOT NULL,
+            payment_status TEXT NOT NULL DEFAULT 'Unpaid',
+            payment_method TEXT,
+            timestamp TEXT NOT NULL
+        )
+    ''')
+    
+    # Create Inquiries Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS inquiries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp TEXT NOT NULL
+        )
+    ''')
+    db.commit()
+
+    # Seed mock data
+    seed_mock_data(db)
+
 def init_db():
     with app.app_context():
-        db = get_db()
-        cursor = db.cursor()
-        
-        # Create Registrations Table
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS registrations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                reg_id TEXT UNIQUE NOT NULL,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                phone TEXT NOT NULL,
-                role TEXT NOT NULL,
-                college TEXT NOT NULL,
-                department TEXT NOT NULL,
-                payment_status TEXT NOT NULL DEFAULT 'Unpaid',
-                payment_method TEXT,
-                timestamp TEXT NOT NULL
-            )
-        ''')
-        
-        # Create Inquiries Table
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS inquiries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                message TEXT NOT NULL,
-                timestamp TEXT NOT NULL
-            )
-        ''')
-        
-        db.commit()
-
-        # Auto-seed if database is empty
-        cursor.execute("SELECT COUNT(*) FROM registrations")
-        if cursor.fetchone()[0] == 0:
-            seed_mock_data(db)
+        get_db()
 
 def seed_mock_data(db):
     cursor = db.cursor()
