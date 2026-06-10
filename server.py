@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import Flask, request, jsonify, g
 
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -9,6 +9,7 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 DATABASE = 'database.db'
 MENTOR_USER = 'deepak.bce'
 MENTOR_PASS = 'ccna2026'
+INVALID_PAYLOAD = "Invalid payload"
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -88,7 +89,7 @@ def seed_mock_data(db):
 
 # --- Serve Frontend Routes ---
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
 
@@ -129,7 +130,7 @@ def api_register():
         role = data.get('role')
         college = data.get('college')
         department = data.get('department')
-        timestamp = datetime.utcnow().isoformat() + 'Z'
+        timestamp = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         
         # Check duplicate email, name, or phone number
         cursor.execute("SELECT COUNT(*) FROM registrations WHERE email = ? OR name = ? OR phone = ?", (email, name, phone))
@@ -152,7 +153,7 @@ def api_register():
 def api_pay():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     reg_id = data.get('reg_id')
     payment_method = data.get('payment_method')
@@ -183,7 +184,7 @@ def api_pay():
 def api_student_login():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     email = data.get('email')
     phone = data.get('phone')
@@ -225,7 +226,7 @@ def api_student_login():
 def api_inquiry():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     try:
         db = get_db()
@@ -234,7 +235,7 @@ def api_inquiry():
         name = data.get('name')
         email = data.get('email')
         message = data.get('message')
-        timestamp = datetime.utcnow().isoformat() + 'Z'
+        timestamp = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         
         cursor.execute('''
             INSERT INTO inquiries (name, email, message, timestamp)
@@ -252,7 +253,7 @@ def api_inquiry():
 def api_login():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     username = data.get('username')
     password = data.get('password')
@@ -326,4 +327,4 @@ if __name__ == '__main__':
     init_db()
     print("Bahubali College of Engineering - CCNA Training Server Started.")
     print("Serving on http://127.0.0.1:5000")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)

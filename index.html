@@ -3,16 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- PWA Masterpiece Integration -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    
-    <!-- iOS Safari PWA support -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CCNA BCE">
-    <link rel="apple-touch-icon" href="assets/icon-192.png">
     <title>CCNA Program BCE | Bahubali College of Engineering</title>
     
     <!-- Meta Descriptions for SEO -->
@@ -94,7 +84,7 @@
                 <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
                 <span class="logo-title">CCNA Program BCE</span>
             </div>
-            <button id="close-drawer-btn" class="close-btn"><i data-lucide="x"></i></button>
+            <button id="close-drawer-btn" class="close-btn" aria-label="Close Navigation Drawer" title="Close Drawer"><i data-lucide="x"></i></button>
         </div>
         <nav class="mobile-nav-links">
             <a href="#home" class="mobile-link">Home</a>
@@ -103,8 +93,7 @@
             <a href="#schedule" class="mobile-link">Schedule</a>
             <a href="#faq" class="mobile-link">FAQs</a>
             <a href="#contact" class="mobile-link">Contact</a>
-            <a href="#" id="mobile-mentor-btn" class="mobile-link"><i data-lucide="lock" class="icon-xs" style="vertical-align: middle; margin-right: 4px;"></i> Mentor Portal</a>
-            <a href="#" id="drawer-install-btn" class="mobile-link" style="display: none; color: var(--accent-color); font-weight: 700;"><i data-lucide="download" class="icon-xs" style="vertical-align: middle; margin-right: 4px;"></i> Install App</a>
+            <a href="#" id="mobile-mentor-btn" class="mobile-link"><i data-lucide="lock" class="icon-xs align-middle-mr4"></i> Mentor Portal</a>
             <a href="#register" class="mobile-link mobile-cta">Register Now</a>
         </nav>
     </div>
@@ -162,7 +151,7 @@
             </div>
             
             <div class="scroll-down-indicator">
-                <a href="#about"><i data-lucide="chevron-down" class="bounce"></i></a>
+                <a href="#about" aria-label="Scroll down to About section"><i data-lucide="chevron-down" class="bounce"></i></a>
             </div>
         </section>
 
@@ -620,21 +609,21 @@
                         
                         <!-- Step 1: Registration / Verification -->
                         <div class="wizard-step-pane active" id="wizard-step-1">
-                            <div class="nested-tabs-header" style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                                <button type="button" class="nested-tab-btn active" id="nested-tab-new" style="display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">
-                                    <i data-lucide="user-plus" style="width: 16px; height: 16px;"></i> New Registration
+                            <div class="nested-tabs-header">
+                                <button type="button" class="nested-tab-btn active" id="nested-tab-new">
+                                    <i data-lucide="user-plus"></i> New Registration
                                 </button>
-                                <button type="button" class="nested-tab-btn" id="nested-tab-verify" style="display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">
-                                    <i data-lucide="user-check" style="width: 16px; height: 16px;"></i> Verify / Sign In
+                                <button type="button" class="nested-tab-btn" id="nested-tab-verify">
+                                    <i data-lucide="user-check"></i> Verify / Sign In
                                 </button>
                             </div>
 
                             <!-- Duplicate Warning -->
-                            <div id="duplicate-warning-block" class="form-disclaimer glass-card" style="display: none; background-color: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.15); margin-bottom: 20px; gap: 12px;">
-                                <i data-lucide="alert-circle" class="text-error" style="width: 20px; height: 20px; flex-shrink: 0;"></i>
-                                <div style="text-align: left;">
-                                    <h5 style="color: var(--error-color); font-weight: 700; font-size: 0.9rem;">Duplicate Email Detected</h5>
-                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">An application with this email already exists. Please select the <strong>Verify / Sign In</strong> tab above, then enter your registered email and mobile number to complete payment or access your admission slip.</p>
+                            <div id="duplicate-warning-block" class="form-disclaimer glass-card">
+                                <i data-lucide="alert-circle" class="text-error"></i>
+                                <div class="text-left">
+                                    <h5 class="warning-title">Duplicate Email Detected</h5>
+                                    <p class="warning-text">An application with this email already exists. Please select the <strong>Verify / Sign In</strong> tab above, then enter your registered email and mobile number to complete payment or access your admission slip.</p>
                                 </div>
                             </div>
 
@@ -715,7 +704,7 @@
                             </div>
 
                             <!-- Form Pane 2: Verify / Sign-In -->
-                            <div class="nested-pane" id="nested-pane-verify" style="display: none;">
+                            <div class="nested-pane" id="nested-pane-verify">
                                 <form id="student-login-form" novalidate>
                                     <div class="form-grid">
                                         <div class="form-group">
@@ -737,7 +726,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-disclaimer glass-card" style="margin-top: 24px;">
+                                    <div class="form-disclaimer glass-card mt-24">
                                         <i data-lucide="shield-check" class="text-accent"></i>
                                         <p>Sign-in details act as secure checks. If payment was completed, you'll be redirected directly to your admission receipt. If payment is pending, you'll proceed to checkout.</p>
                                     </div>
@@ -1124,24 +1113,24 @@
 
     <!-- Mentor Login Modal -->
     <div class="secure-loader-overlay" id="mentor-login-modal">
-        <div class="loader-content glass-card animate-scale" style="max-width: 420px; border-top-color: var(--accent-color);">
-            <div class="modal-header-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="shield-alert" class="text-accent" style="width: 24px; height: 24px;"></i>
-                    <h3 style="font-size: 1.15rem; font-family: 'Outfit';">Mentor Authorization</h3>
+        <div class="loader-content glass-card animate-scale mentor-modal-content">
+            <div class="modal-header-row">
+                <div class="modal-header-title">
+                    <i data-lucide="shield-alert" class="text-accent"></i>
+                    <h3>Mentor Authorization</h3>
                 </div>
-                <button id="close-login-btn" style="background: none; border: none; cursor: pointer; color: var(--text-muted);"><i data-lucide="x"></i></button>
+                <button id="close-login-btn" aria-label="Close Login Modal" title="Close Login"><i data-lucide="x"></i></button>
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; text-align: left; width: 100%;">Authorized Faculty Access Only (Deepak sir). Please enter credentials to unlock the analytics registry.</p>
-            <form id="mentor-login-form" style="width: 100%; text-align: left;" novalidate>
-                <div class="form-group" style="margin-bottom: 16px;">
+            <p class="modal-desc">Authorized Faculty Access Only (Deepak sir). Please enter credentials to unlock the analytics registry.</p>
+            <form id="mentor-login-form" class="modal-form" novalidate>
+                <div class="form-group mb-16">
                     <label for="login-username">Username</label>
                     <div class="input-wrapper">
                         <i data-lucide="user" class="input-icon"></i>
                         <input type="text" id="login-username" placeholder="deepak.bce" required>
                     </div>
                 </div>
-                <div class="form-group" style="margin-bottom: 24px;">
+                <div class="form-group mb-24">
                     <label for="login-password">Password</label>
                     <div class="input-wrapper">
                         <i data-lucide="key" class="input-icon"></i>
@@ -1214,7 +1203,7 @@
                                 <i data-lucide="search" class="search-icon"></i>
                                 <input type="text" id="db-search" placeholder="Search name or college...">
                             </div>
-                            <select id="db-filter" class="table-filter-select">
+                            <select id="db-filter" class="table-filter-select" aria-label="Filter database registrations" title="Filter Database">
                                 <option value="all">Show All</option>
                                 <option value="paid">Paid Only</option>
                                 <option value="unpaid">Unpaid Only</option>
@@ -1284,55 +1273,6 @@
         <i data-lucide="info" class="toast-icon" id="toast-icon"></i>
         <span class="toast-message" id="toast-message">Message sent successfully!</span>
     </div>
-
-    <!-- PWA Install Banner -->
-    <div class="pwa-install-banner" id="pwa-install-banner">
-        <div class="install-logo-wrapper">
-            <img src="assets/icon-192.png" alt="App Icon" class="install-logo">
-        </div>
-        <div class="install-info">
-            <h4>CCNA Program App</h4>
-            <p>Install the app for quick, offline-friendly access.</p>
-        </div>
-        <div class="install-actions">
-            <button id="pwa-install-btn" class="cta-btn primary-btn btn-sm">Install</button>
-            <button id="pwa-close-btn" class="close-btn-sm" aria-label="Dismiss"><i data-lucide="x"></i></button>
-        </div>
-    </div>
-
-    <!-- Offline Indicator Banner -->
-    <div class="offline-notification" id="offline-notification">
-        <i data-lucide="wifi-off" class="offline-icon"></i>
-        <div class="offline-text">
-            <h4>Connection Lost</h4>
-            <p>You are offline. Registration and database access are limited.</p>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation Bar for Mobile App Mode -->
-    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
-        <a href="#home" class="bottom-nav-item active" data-section="home">
-            <i data-lucide="home"></i>
-            <span>Home</span>
-        </a>
-        <a href="#about" class="bottom-nav-item" data-section="about">
-            <i data-lucide="info"></i>
-            <span>About</span>
-        </a>
-        <a href="#curriculum" class="bottom-nav-item" data-section="curriculum">
-            <i data-lucide="book-open"></i>
-            <span>Syllabus</span>
-        </a>
-        <a href="#schedule" class="bottom-nav-item" data-section="schedule">
-            <i data-lucide="calendar"></i>
-            <span>Schedule</span>
-        </a>
-        <a href="#register" class="bottom-nav-item" data-section="register">
-            <i data-lucide="user-plus"></i>
-            <span>Register</span>
-        </a>
-    </nav>
-
     <!-- Custom Script -->
     <script src="app.js"></script>
 </body>

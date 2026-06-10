@@ -7,20 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Register Service Worker for PWA (Offline & Install support)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Service Worker registered successfully with scope:', reg.scope))
-            .catch(err => console.warn('Service Worker registration failed:', err));
-    }
-
-    // Helper to resolve API URLs (enables loading via local file:// protocol and Capacitor shell)
+    // Helper to resolve API URLs
     const getApiUrl = (path) => {
-        // If running inside Capacitor mobile shell or local files, point to live hosted Vercel backend
-        if (window.Capacitor || window.location.protocol === 'file:' || 
-            (window.location.hostname === 'localhost' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
-            return 'https://ccna-training-in-bce.vercel.app' + path;
-        }
         // If developer is working locally on desktop PC, fall back to local server
         if (window.location.protocol === 'http:' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
             return 'http://127.0.0.1:5000' + path;
@@ -351,19 +339,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const randomRegNum = Math.floor(10000 + Math.random() * 90000);
             state.registrationId = `BCE-CCNA-${randomRegNum}`;
 
+            const regPayload = {
+                reg_id: state.registrationId,
+                name: state.candidateName,
+                email: state.candidateEmail,
+                phone: state.candidatePhone,
+                role: state.candidateRole,
+                college: state.candidateCollege,
+                department: state.candidateDept
+            };
+
             // Save to Python SQLite DB (Unpaid)
             fetch(getApiUrl('/api/register'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    reg_id: state.registrationId,
-                    name: state.candidateName,
-                    email: state.candidateEmail,
-                    phone: state.candidatePhone,
-                    role: state.candidateRole,
-                    college: state.candidateCollege,
-                    department: state.candidateDept
-                })
+                body: JSON.stringify(regPayload)
             })
             .then(res => res.json())
             .then(data => {
@@ -386,9 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error(err);
-                // Fallback
-                gotoStep(2);
-                document.getElementById('register').scrollIntoView({ behavior: 'smooth' });
+                showToast('Registration failed due to a network connection issue. Please try again.', 'error');
             });
         } else {
             showToast('Please correct the validation errors in the form.', 'error');
@@ -679,15 +667,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const msgValid = validateInput(contactMsg, val => val.length >= 10);
 
             if (nameValid && emailValid && msgValid) {
+                const inqPayload = {
+                    name: contactName.value.trim(),
+                    email: contactEmail.value.trim(),
+                    message: contactMsg.value.trim()
+                };
+
                 // Save inquiry to Python Database
                 fetch(getApiUrl('/api/inquiry'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: contactName.value.trim(),
-                        email: contactEmail.value.trim(),
-                        message: contactMsg.value.trim()
-                    })
+                    body: JSON.stringify(inqPayload)
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -700,9 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(err => {
                     console.error(err);
-                    // Fallback
-                    contactForm.reset();
-                    showToast('Your inquiry has been sent to Mr. S. Deepak.', 'success');
+                    showToast('Submission failed due to a network connection issue. Please try again.', 'error');
                 });
             } else {
                 showToast('Please correct validation issues before submitting.', 'error');
@@ -951,114 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
     // Search and Filter Listeners
     dbSearch.addEventListener('input', renderTables);
     dbFilter.addEventListener('change', renderTables);
-
-    /* ==========================================================================
-       PWA MASTERPIECE UI - OFFLINE DETECTION & CUSTOM INSTALL PROMPT
-       ========================================================================== */
-    const offlineNotification = document.getElementById('offline-notification');
-    const pwaInstallBanner = document.getElementById('pwa-install-banner');
-    const pwaInstallBtn = document.getElementById('pwa-install-btn');
-    const pwaCloseBtn = document.getElementById('pwa-close-btn');
-    const drawerInstallBtn = document.getElementById('drawer-install-btn');
-
-    // Offline / Online Status Detection
-    function updateOnlineStatus() {
-        const isOffline = !navigator.onLine;
-        if (isOffline) {
-            offlineNotification.classList.add('active');
-            showToast('You are currently offline. Registration form is disabled.', 'error');
-        } else {
-            if (offlineNotification.classList.contains('active')) {
-                offlineNotification.classList.remove('active');
-                showToast('You are back online!', 'success');
-            }
-        }
-    }
-
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    
-    // Check initial online status
-    if (!navigator.onLine) {
-        offlineNotification.classList.add('active');
-    }
-
-    // Intercept form submissions when offline
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', (e) => {
-            if (!navigator.onLine) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('Cannot submit form while offline. Please connect to the internet.', 'error');
-            }
-        }, true); // Use capturing to intercept early
-    });
-
-    // Custom PWA Install prompt handling
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent default browser install dialog
-        e.preventDefault();
-        // Store event for later trigger
-        deferredPrompt = e;
-        
-        // Show PWA floating banner if not previously dismissed
-        const isDismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
-        if (!isDismissed && pwaInstallBanner) {
-            pwaInstallBanner.classList.add('active');
-        }
-
-        // Show the nav drawer install link
-        if (drawerInstallBtn) {
-            drawerInstallBtn.style.display = 'flex';
-        }
-    });
-
-    // Handle Install Actions
-    const handleInstallClick = async () => {
-        if (!deferredPrompt) return;
-        
-        // Trigger install prompt
-        deferredPrompt.prompt();
-        
-        // Await user response
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response to install prompt: ${outcome}`);
-        
-        // Reset deferred prompt
-        deferredPrompt = null;
-        
-        // Hide install elements
-        if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
-        if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
-    };
-
-    if (pwaInstallBtn) pwaInstallBtn.addEventListener('click', handleInstallClick);
-    if (drawerInstallBtn) drawerInstallBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleInstallClick();
-    });
-
-    // Handle Close / Dismiss
-    if (pwaCloseBtn && pwaInstallBanner) {
-        pwaCloseBtn.addEventListener('click', () => {
-            pwaInstallBanner.classList.remove('active');
-            // Store dismissal preference so we don't annoy the user
-            localStorage.setItem('pwa-install-dismissed', 'true');
-        });
-    }
-
-    // Reset dismissal preference on app load if installed successfully
-    window.addEventListener('appinstalled', (evt) => {
-        console.log('CCNA Program BCE App installed successfully!');
-        if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
-        if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
-        showToast('CCNA Program App installed successfully!', 'success');
-    });
 });
