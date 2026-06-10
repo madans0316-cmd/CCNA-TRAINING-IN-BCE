@@ -239,6 +239,49 @@ def api_student_login():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/api/debug', methods=['GET'])
+def api_debug():
+    import traceback
+    info = {
+        "cwd": os.getcwd(),
+        "env": {k: v for k, v in os.environ.items() if k in ['VERCEL', 'VERCEL_ENV', 'VERCEL_URL', 'AWS_LAMBDA_FUNCTION_NAME']},
+        "database_variable": DATABASE,
+        "is_tmp_writable": False,
+        "is_cwd_writable": False,
+        "errors": []
+    }
+    
+    # Check if cwd is writable
+    try:
+        f = open('test_cwd.txt', 'w')
+        f.write('test')
+        f.close()
+        os.remove('test_cwd.txt')
+        info["is_cwd_writable"] = True
+    except Exception as e:
+        info["errors"].append(f"CWD write error: {str(e)}")
+        
+    # Check if /tmp is writable
+    try:
+        f = open('/tmp/test_tmp.txt', 'w')
+        f.write('test')
+        f.close()
+        os.remove('/tmp/test_tmp.txt')
+        info["is_tmp_writable"] = True
+    except Exception as e:
+        info["errors"].append(f"/tmp write error: {str(e)}")
+        
+    # Check if database can be opened
+    try:
+        db = sqlite3.connect(DATABASE)
+        db.close()
+        info["database_connect_status"] = "OK"
+    except Exception as e:
+        info["database_connect_status"] = f"Error: {str(e)}"
+        info["errors"].append(traceback.format_exc())
+        
+    return jsonify(info)
+
 @app.route('/api/inquiry', methods=['POST'])
 def api_inquiry():
     data = request.json
