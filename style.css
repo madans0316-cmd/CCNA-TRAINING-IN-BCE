@@ -187,6 +187,40 @@ button {
     display: flex;
     align-items: center;
     border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8) !important; /* White glass morph */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08) !important;
+}
+
+.main-header .logo-title {
+    color: #0f172a !important; /* High contrast dark text */
+}
+
+.main-header .logo-subtitle {
+    color: #475569 !important;
+}
+
+.main-header .nav-link {
+    color: #475569 !important;
+}
+
+.main-header .nav-link:hover, .main-header .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+.main-header .theme-btn {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+}
+
+.main-header .theme-btn i {
+    color: #475569 !important;
+}
+
+.main-header .hamburger-btn .bar {
+    background-color: #0f172a !important;
 }
 
 .header-container {
@@ -207,6 +241,13 @@ button {
     height: 44px;
     width: 44px;
     object-fit: contain;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95); /* White glass morph container */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    padding: 2px;
 }
 
 .logo-text {
@@ -381,15 +422,29 @@ button {
     right: -300px;
     width: 280px;
     height: 100%;
-    background-color: var(--bg-secondary);
-    border-left: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.85) !important; /* White glass morph drawer/folder */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.45) !important;
     z-index: 200;
     padding: 30px 24px;
     display: flex;
     flex-direction: column;
     gap: 40px;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+    box-shadow: -10px 0 30px rgba(15, 23, 42, 0.1) !important;
     transition: right 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.mobile-drawer .logo-title {
+    color: #0f172a !important;
+}
+
+.mobile-drawer .mobile-link {
+    color: #475569 !important;
+}
+
+.mobile-drawer .mobile-link:hover {
+    color: var(--primary-color) !important;
 }
 
 .mobile-drawer.active {
@@ -3117,11 +3172,11 @@ label {
         left: 0;
         right: 0;
         height: calc(64px + env(safe-area-inset-bottom, 0px));
-        background: rgba(15, 23, 42, 0.9);
-        -webkit-backdrop-filter: blur(16px);
-        backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+        background: rgba(255, 255, 255, 0.85) !important; /* White glass morph */
+        -webkit-backdrop-filter: blur(20px) !important;
+        backdrop-filter: blur(20px) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.45) !important;
+        box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.08) !important;
         z-index: 999;
         justify-content: space-around;
         align-items: center;
@@ -3136,7 +3191,7 @@ label {
         justify-content: center;
         flex-grow: 1;
         height: 100%;
-        color: #64748b;
+        color: #475569 !important; /* Dark text for contrast on white glass */
         text-decoration: none;
         font-size: 0.7rem;
         font-weight: 500;
@@ -3158,7 +3213,7 @@ label {
 
     /* Active state styling with cyan glows */
     .bottom-nav-item.active {
-        color: #60a5fa;
+        color: #2563eb !important; /* High contrast active color */
     }
 
     .bottom-nav-item.active i {
