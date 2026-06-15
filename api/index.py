@@ -1,24 +1,29 @@
 import os
 import sqlite3
-from datetime import datetime
+import tempfile
+from datetime import datetime, timezone
 from flask import Flask, request, jsonify, g
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 # Configuration
-DATABASE = '/tmp/database.db'
+DATABASE = os.path.join(tempfile.gettempdir(), 'database.db')
+INVALID_PAYLOAD = "Invalid payload"
 
-MENTOR_USER = 'deepak.bce'
-MENTOR_PASS = 'ccna2026'
+# Secure Mentor dashboard configurations
+MENTOR_USER = os.environ.get('MENTOR_USER', 'deepak.bce')
+MENTOR_PASS = os.environ.get('MENTOR_PASS', 'ccna2026')
+ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN', 'BCE-DEEPAK-ADMIN-SECURE-KEY')
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         try:
-            db = g._database = sqlite3.connect(DATABASE)
+            # Try connecting to current directory database first
+            db = g._database = sqlite3.connect('database.db')
         except sqlite3.OperationalError:
-            # Absolute fallback to /tmp/database.db if default path is read-only
-            db = g._database = sqlite3.connect('/tmp/database.db')
+            # Fallback to temp directory database if default path is read-only
+            db = g._database = sqlite3.connect(DATABASE)
         db.row_factory = sqlite3.Row
         
         # Lazy check and initialization of tables
@@ -105,25 +110,41 @@ def seed_mock_data(db):
 
 # --- Serve Frontend Routes ---
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
 
 # --- CORS preflight options & response headers ---
+
+def get_allowed_origin():
+    origin = request.headers.get('Origin')
+    if not origin:
+        return None
+    # Whitelist local development and Capacitor mobile app
+    if origin.startswith('http://localhost') or origin.startswith('http://127.0.0.1') or origin == 'capacitor://localhost':
+        return origin
+    # Whitelist the primary Vercel deployment domain and its branch previews
+    if origin == 'https://ccna-training-in-bce.vercel.app' or origin.endswith('.vercel.app'):
+        return origin
+    return None
 
 @app.before_request
 def handle_options():
     print(f"[DEBUG] Incoming request: method={request.method}, path={request.path}, url={request.url}", flush=True)
     if request.method == 'OPTIONS':
         response = jsonify({"success": True})
-        response.headers['Access-Control-Allow-Origin'] = '*'
+        allowed_origin = get_allowed_origin()
+        if allowed_origin:
+            response.headers['Access-Control-Allow-Origin'] = allowed_origin
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
         response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
         return response
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    allowed_origin = get_allowed_origin()
+    if allowed_origin:
+        response.headers['Access-Control-Allow-Origin'] = allowed_origin
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
     response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
     return response
@@ -147,7 +168,7 @@ def api_register():
         role = data.get('role')
         college = data.get('college')
         department = data.get('department')
-        timestamp = datetime.utcnow().isoformat() + 'Z'
+        timestamp = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         
         # Check duplicate email, name, or phone number
         cursor.execute("SELECT COUNT(*) FROM registrations WHERE email = ? OR name = ? OR phone = ?", (email, name, phone))
@@ -170,7 +191,7 @@ def api_register():
 def api_pay():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     reg_id = data.get('reg_id')
     payment_method = data.get('payment_method')
@@ -201,7 +222,7 @@ def api_pay():
 def api_student_login():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     email = data.get('email')
     phone = data.get('phone')
@@ -261,15 +282,16 @@ def api_debug():
     except Exception as e:
         info["errors"].append(f"CWD write error: {str(e)}")
         
-    # Check if /tmp is writable
+    # Check if temp directory is writable
     try:
-        f = open('/tmp/test_tmp.txt', 'w')
-        f.write('test')
-        f.close()
-        os.remove('/tmp/test_tmp.txt')
+        temp_dir = tempfile.gettempdir()
+        test_file = os.path.join(temp_dir, 'test_tmp.txt')
+        with open(test_file, 'w') as f:
+            f.write('test')
+        os.remove(test_file)
         info["is_tmp_writable"] = True
     except Exception as e:
-        info["errors"].append(f"/tmp write error: {str(e)}")
+        info["errors"].append(f"Temp directory write error: {str(e)}")
         
     # Check if database can be opened
     try:
@@ -286,7 +308,7 @@ def api_debug():
 def api_inquiry():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     try:
         db = get_db()
@@ -295,7 +317,7 @@ def api_inquiry():
         name = data.get('name')
         email = data.get('email')
         message = data.get('message')
-        timestamp = datetime.utcnow().isoformat() + 'Z'
+        timestamp = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         
         cursor.execute('''
             INSERT INTO inquiries (name, email, message, timestamp)
@@ -313,19 +335,19 @@ def api_inquiry():
 def api_login():
     data = request.json
     if not data:
-        return jsonify({"success": False, "error": "Invalid payload"}), 400
+        return jsonify({"success": False, "error": INVALID_PAYLOAD}), 400
         
     username = data.get('username')
     password = data.get('password')
     
     if username == MENTOR_USER and password == MENTOR_PASS:
-        return jsonify({"success": True, "token": "BCE-DEEPAK-ADMIN-SECURE-KEY"})
+        return jsonify({"success": True, "token": ADMIN_TOKEN})
     else:
         return jsonify({"success": False, "error": "Invalid username or password"}), 401
-
+        
 def check_auth():
     auth_header = request.headers.get('Authorization')
-    return auth_header == "Bearer BCE-DEEPAK-ADMIN-SECURE-KEY"
+    return auth_header == f"Bearer {ADMIN_TOKEN}"
 
 @app.route('/api/mentor/stats', methods=['GET'])
 def api_mentor_stats():
@@ -387,4 +409,4 @@ def api_mentor_data():
 if __name__ == '__main__':
     print("Bahubali College of Engineering - CCNA Training Server Started.")
     print("Serving on http://127.0.0.1:5000")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)

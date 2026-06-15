@@ -58,28 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         paymentMethod: 'upi'
     };
 
-    /* ==========================================================================
-       Theme Toggle & Dark/Light Mode Memory
-       ========================================================================== */
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    
-    // Check local storage or system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'light') {
-        document.body.classList.remove('dark-theme');
-    } else if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-        document.body.classList.add('dark-theme');
-    } else {
-        document.body.classList.remove('dark-theme'); // default fallback
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        const isDark = document.body.classList.contains('dark-theme');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
+    // Theme logic removed - light theme only
 
     /* ==========================================================================
        Responsive Drawer Navigation
