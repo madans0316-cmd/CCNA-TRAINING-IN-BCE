@@ -85,22 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
        Responsive Drawer Navigation
        ========================================================================== */
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileDrawer = document.getElementById('mobile-drawer');
-    const drawerOverlay = document.getElementById('drawer-overlay');
     const closeDrawerBtn = document.getElementById('close-drawer-btn');
+    const drawerOverlay = document.getElementById('drawer-overlay');
     const mobileLinks = document.querySelectorAll('.mobile-link');
-
-    function toggleDrawer(open) {
-        if (open) {
-            mobileDrawer.classList.add('active');
-            drawerOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // prevent back-scroll
-        } else {
-            mobileDrawer.classList.remove('active');
-            drawerOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
 
     mobileMenuBtn.addEventListener('click', () => toggleDrawer(true));
     closeDrawerBtn.addEventListener('click', () => toggleDrawer(false));
@@ -166,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function scrollSpy() {
         let currentSectionId = '';
-        const scrollPosition = window.scrollY + 220; // Offset for top header on mobile/desktop
+        const scrollPosition = globalThis.scrollY + 220; // Offset for top header on mobile/desktop
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -193,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.addEventListener('scroll', scrollSpy);
+    globalThis.addEventListener('scroll', scrollSpy);
 
     // Smooth scroll navigation for Mobile Bottom Tabs
     bottomNavLinks.forEach(link => {
@@ -216,9 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Smooth scroll with mobile header offset
                 const headerOffset = 70;
                 const elementPosition = targetSection.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                const offsetPosition = elementPosition + globalThis.pageYOffset - headerOffset;
 
-                window.scrollTo({
+                globalThis.scrollTo({
                     top: offsetPosition,
                     behavior: 'smooth'
                 });
@@ -226,20 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* ==========================================================================
-       Form Validation Utility Functions
-       ========================================================================== */
-    function validateInput(inputElement, validationFn) {
-        const formGroup = inputElement.closest('.form-group');
-        const isValid = validationFn(inputElement.value.trim());
-
-        if (isValid) {
-            formGroup.classList.remove('invalid');
-        } else {
-            formGroup.classList.add('invalid');
-        }
-        return isValid;
-    }
+    // validateInput is defined in the outer scope
 
     // Add inline blur validations for UX
     const regName = document.getElementById('reg-name');
@@ -285,24 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginStudentEmail = document.getElementById('login-student-email');
     const loginStudentPhone = document.getElementById('login-student-phone');
 
-    // Tab switching function
-    function switchStudentTab(tabId) {
-        if (tabId === 'new') {
-            nestedTabNew.classList.add('active');
-            nestedTabVerify.classList.remove('active');
-            nestedPaneNew.style.display = 'block';
-            nestedPaneNew.classList.add('active');
-            nestedPaneVerify.style.display = 'none';
-            nestedPaneVerify.classList.remove('active');
-        } else if (tabId === 'verify') {
-            nestedTabNew.classList.remove('active');
-            nestedTabVerify.classList.add('active');
-            nestedPaneNew.style.display = 'none';
-            nestedPaneNew.classList.remove('active');
-            nestedPaneVerify.style.display = 'block';
-            nestedPaneVerify.classList.add('active');
-        }
-    }
+    // switchStudentTab is defined in the outer scope
 
     if (nestedTabNew && nestedTabVerify) {
         nestedTabNew.addEventListener('click', () => {
@@ -320,31 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginStudentPhone.addEventListener('blur', () => validateInput(loginStudentPhone, val => PHONE_REGEX.test(val)));
     }
 
-    // Transition wizard panels
-    function gotoStep(stepNum) {
-        // Remove active states
-        stepPane1.classList.remove('active');
-        stepPane2.classList.remove('active');
-        stepPane3.classList.remove('active');
-
-        stepInd1.classList.remove('active', 'completed');
-        stepInd2.classList.remove('active', 'completed');
-        stepInd3.classList.remove('active', 'completed');
-
-        if (stepNum === 1) {
-            stepPane1.classList.add('active');
-            stepInd1.classList.add('active');
-        } else if (stepNum === 2) {
-            stepPane2.classList.add('active');
-            stepInd1.classList.add('completed');
-            stepInd2.classList.add('active');
-        } else if (stepNum === 3) {
-            stepPane3.classList.add('active');
-            stepInd1.classList.add('completed');
-            stepInd2.classList.add('completed');
-            stepInd3.classList.add('active');
-        }
-    }
+    // gotoStep is defined in the outer scope
 
     // Submit Step 1: Form Validation
     registrationForm.addEventListener('submit', (e) => {
@@ -1353,4 +1286,82 @@ function showToast(message, type = 'success') {
     toastTimeout = setTimeout(() => {
         toast.classList.remove('active');
     }, 4000);
+}
+
+/* ==========================================================================
+   NAVIGATION, STEPS, AND DRAWER UTILITIES (Outer Scope)
+   ========================================================================== */
+function toggleDrawer(open) {
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+    if (!mobileDrawer || !drawerOverlay) return;
+
+    if (open) {
+        mobileDrawer.classList.add('active');
+        drawerOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else {
+        mobileDrawer.classList.remove('active');
+        drawerOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+function switchStudentTab(tabId) {
+    const nestedTabNew = document.getElementById('nested-tab-new');
+    const nestedTabVerify = document.getElementById('nested-tab-verify');
+    const nestedPaneNew = document.getElementById('nested-pane-new');
+    const nestedPaneVerify = document.getElementById('nested-pane-verify');
+
+    if (!nestedTabNew || !nestedTabVerify || !nestedPaneNew || !nestedPaneVerify) return;
+
+    if (tabId === 'new') {
+        nestedTabNew.classList.add('active');
+        nestedTabVerify.classList.remove('active');
+        nestedPaneNew.style.display = 'block';
+        nestedPaneNew.classList.add('active');
+        nestedPaneVerify.style.display = 'none';
+        nestedPaneVerify.classList.remove('active');
+    } else if (tabId === 'verify') {
+        nestedTabNew.classList.remove('active');
+        nestedTabVerify.classList.add('active');
+        nestedPaneNew.style.display = 'none';
+        nestedPaneNew.classList.remove('active');
+        nestedPaneVerify.style.display = 'block';
+        nestedPaneVerify.classList.add('active');
+    }
+}
+
+function gotoStep(stepNum) {
+    const stepPane1 = document.getElementById('wizard-step-1');
+    const stepPane2 = document.getElementById('wizard-step-2');
+    const stepPane3 = document.getElementById('wizard-step-3');
+    const stepInd1 = document.getElementById('step-ind-1');
+    const stepInd2 = document.getElementById('step-ind-2');
+    const stepInd3 = document.getElementById('step-ind-3');
+
+    if (!stepPane1 || !stepPane2 || !stepPane3 || !stepInd1 || !stepInd2 || !stepInd3) return;
+
+    // Remove active states
+    stepPane1.classList.remove('active');
+    stepPane2.classList.remove('active');
+    stepPane3.classList.remove('active');
+
+    stepInd1.classList.remove('active', 'completed');
+    stepInd2.classList.remove('active', 'completed');
+    stepInd3.classList.remove('active', 'completed');
+
+    if (stepNum === 1) {
+        stepPane1.classList.add('active');
+        stepInd1.classList.add('active');
+    } else if (stepNum === 2) {
+        stepPane2.classList.add('active');
+        stepInd1.classList.add('completed');
+        stepInd2.classList.add('active');
+    } else if (stepNum === 3) {
+        stepPane3.classList.add('active');
+        stepInd1.classList.add('completed');
+        stepInd2.classList.add('completed');
+        stepInd3.classList.add('active');
+    }
 }
