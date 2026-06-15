@@ -2,5 +2,9 @@
   "appId": "com.bce.ccnaprogram",
   "appName": "CCNA Program BCE",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://ccna-training-in-bce.vercel.app",
+    "cleartext": true
+  }
 }

@@ -980,7 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dbFilter.addEventListener('change', renderTables);
 
     /* ==========================================================================
-       CLASS REMINDERS & ALERTS LOGIC (Fridays & Saturdays from July 18, 2006)
+       CLASS REMINDERS & ALERTS LOGIC (Fridays & Saturdays from July 17, 2026)
        ========================================================================== */
     const addToCalendarBtn = document.getElementById('add-to-calendar-btn');
     const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
@@ -988,7 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addToCalendarBtn) {
         addToCalendarBtn.addEventListener('click', () => {
             try {
-                // Generate a standard .ics (iCalendar) file subscription starting Saturday, July 18, 2006
+                // Generate a standard .ics (iCalendar) file subscription starting Friday, July 17, 2026
                 const icsContent = [
                     "BEGIN:VCALENDAR",
                     "VERSION:2.0",
@@ -996,25 +996,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     "CALSCALE:GREGORIAN",
                     "METHOD:PUBLISH",
                     
-                    // Saturday Class (Starts Sat, July 18, 2006 at 9:00 AM)
+                    // Friday Class (Starts Fri, July 17, 2026 at 9:00 AM)
                     "BEGIN:VEVENT",
-                    "UID:ccna-saturday-class-2006@bce.edu",
-                    "DTSTART;TZID=Asia/Kolkata:20060718T090000",
-                    "DTEND;TZID=Asia/Kolkata:20060718T170000",
-                    "RRULE:FREQ=WEEKLY;BYDAY=SA",
-                    "SUMMARY:CCNA Training Session - BCE CoE",
-                    "DESCRIPTION:Weekly CCNA Training Session. Attendance is mandatory.",
-                    "LOCATION:BCE Center of Excellence Networking Lab",
-                    "END:VEVENT",
-                    
-                    // Friday Class (Starts Fri, July 24, 2006 at 9:00 AM)
-                    "BEGIN:VEVENT",
-                    "UID:ccna-friday-class-2006@bce.edu",
-                    "DTSTART;TZID=Asia/Kolkata:20060724T090000",
-                    "DTEND;TZID=Asia/Kolkata:20060724T170000",
+                    "UID:ccna-friday-class-2026@bce.edu",
+                    "DTSTART;TZID=Asia/Kolkata:20260717T090000",
+                    "DTEND;TZID=Asia/Kolkata:20260717T170000",
                     "RRULE:FREQ=WEEKLY;BYDAY=FR",
                     "SUMMARY:CCNA Training Session - BCE CoE",
                     "DESCRIPTION:Weekly CCNA Training Session. Lab assessment day.",
+                    "LOCATION:BCE Center of Excellence Networking Lab",
+                    "END:VEVENT",
+                    
+                    // Saturday Class (Starts Sat, July 18, 2026 at 9:00 AM)
+                    "BEGIN:VEVENT",
+                    "UID:ccna-saturday-class-2026@bce.edu",
+                    "DTSTART;TZID=Asia/Kolkata:20260718T090000",
+                    "DTEND;TZID=Asia/Kolkata:20260718T170000",
+                    "RRULE:FREQ=WEEKLY;BYDAY=SA",
+                    "SUMMARY:CCNA Training Session - BCE CoE",
+                    "DESCRIPTION:Weekly CCNA Training Session. Attendance is mandatory.",
                     "LOCATION:BCE Center of Excellence Networking Lab",
                     "END:VEVENT",
                     
@@ -1082,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const permission = await Notification.requestPermission();
                     if (permission === 'granted') {
                         new Notification("CCNA Program BCE Alerts Enabled!", {
-                            body: "Class alerts scheduled for Fridays & Saturdays starting July 18, 2006.",
+                            body: "Class alerts scheduled for Fridays & Saturdays starting July 17, 2026.",
                             icon: "assets/icon-192.png"
                         });
                         showToast('Notifications enabled! Reminders scheduled for class dates.', 'success');
@@ -1126,6 +1126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.addEventListener('scroll', updateActiveBottomNavTab);
+    updateActiveBottomNavTab(); // Highlight active tab immediately on load
     bottomNavItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
