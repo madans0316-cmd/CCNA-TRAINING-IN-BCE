@@ -3,6 +3,38 @@
     Bahubali College of Engineering (BCE) - CCNA Program BCE
    ========================================================================== */
 
+// --- Global Constants & Regex Utilities ---
+const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const PHONE_REGEX = /^\d{10}$/;
+
+// --- Global Form Validation Utility ---
+function validateInput(inputElement, validationFn) {
+    const formGroup = inputElement?.closest('.form-group');
+    if (!formGroup) return false;
+    
+    const isValid = validationFn(inputElement.value.trim());
+    if (isValid) {
+        formGroup.classList.remove('invalid');
+    } else {
+        formGroup.classList.add('invalid');
+    }
+    return isValid;
+}
+
+// --- Global Helper to resolve API URLs ---
+const getApiUrl = (path) => {
+    // If running inside Capacitor mobile shell or local files, point to live hosted Vercel backend
+    if (globalThis.Capacitor || globalThis.location.protocol === 'file:' || 
+        (globalThis.location.hostname === 'localhost' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
+        return 'https://ccna-training-in-bce.vercel.app' + path;
+    }
+    // If developer is working locally on desktop PC, fall back to local server
+    if (globalThis.location.protocol === 'http:' && (globalThis.location.hostname === '127.0.0.1' || globalThis.location.hostname === 'localhost')) {
+        return 'http://127.0.0.1:5000' + path;
+    }
+    return path;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
@@ -13,20 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(reg => console.log('Service Worker registered successfully with scope:', reg.scope))
             .catch(err => console.warn('Service Worker registration failed:', err));
     }
-
-    // Helper to resolve API URLs (enables loading via local file:// protocol and Capacitor shell)
-    const getApiUrl = (path) => {
-        // If running inside Capacitor mobile shell or local files, point to live hosted Vercel backend
-        if (window.Capacitor || window.location.protocol === 'file:' || 
-            (window.location.hostname === 'localhost' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
-            return 'https://ccna-training-in-bce.vercel.app' + path;
-        }
-        // If developer is working locally on desktop PC, fall back to local server
-        if (window.location.protocol === 'http:' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')) {
-            return 'http://127.0.0.1:5000' + path;
-        }
-        return path;
-    };
 
     // Application state
     let state = {
@@ -47,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Check local storage or system preference
     const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const systemPrefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
     
     if (savedTheme === 'light') {
         document.body.classList.remove('dark-theme');
@@ -107,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Set current active
             btn.classList.add('active');
-            const targetModId = btn.getAttribute('data-module');
+            const targetModId = btn.dataset.module;
             const targetContent = document.getElementById(`mod-content-${targetModId}`);
             if (targetContent) {
                 targetContent.classList.add('active');
@@ -223,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     }
 
-    // Add inline blur validations for better UX
+    // Add inline blur validations for UX
     const regName = document.getElementById('reg-name');
     const regEmail = document.getElementById('reg-email');
     const regPhone = document.getElementById('reg-phone');
@@ -232,8 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const regDept = document.getElementById('reg-dept');
 
     regName.addEventListener('blur', () => validateInput(regName, val => val.length >= 3));
-    regEmail.addEventListener('blur', () => validateInput(regEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)));
-    regPhone.addEventListener('blur', () => validateInput(regPhone, val => /^[0-9]{10}$/.test(val)));
+    regEmail.addEventListener('blur', () => validateInput(regEmail, val => EMAIL_REGEX.test(val)));
+    regPhone.addEventListener('blur', () => validateInput(regPhone, val => PHONE_REGEX.test(val)));
     regRole.addEventListener('change', () => validateInput(regRole, val => val !== ''));
     regCollege.addEventListener('blur', () => validateInput(regCollege, val => val !== ''));
     regDept.addEventListener('blur', () => validateInput(regDept, val => val !== ''));
@@ -298,8 +316,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inline blur validation for student login form
     if (loginStudentEmail && loginStudentPhone) {
-        loginStudentEmail.addEventListener('blur', () => validateInput(loginStudentEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)));
-        loginStudentPhone.addEventListener('blur', () => validateInput(loginStudentPhone, val => /^[0-9]{10}$/.test(val)));
+        loginStudentEmail.addEventListener('blur', () => validateInput(loginStudentEmail, val => EMAIL_REGEX.test(val)));
+        loginStudentPhone.addEventListener('blur', () => validateInput(loginStudentPhone, val => PHONE_REGEX.test(val)));
     }
 
     // Transition wizard panels
@@ -333,8 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const isNameValid = validateInput(regName, val => val.length >= 3);
-        const isEmailValid = validateInput(regEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val));
-        const isPhoneValid = validateInput(regPhone, val => /^[0-9]{10}$/.test(val));
+        const isEmailValid = validateInput(regEmail, val => EMAIL_REGEX.test(val));
+        const isPhoneValid = validateInput(regPhone, val => PHONE_REGEX.test(val));
         const isRoleValid = validateInput(regRole, val => val !== '');
         const isCollegeValid = validateInput(regCollege, val => val !== '');
         const isDeptValid = validateInput(regDept, val => val !== '');
@@ -412,8 +430,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (studentLoginForm) {
         studentLoginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const isEmailValid = validateInput(loginStudentEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val));
-            const isPhoneValid = validateInput(loginStudentPhone, val => /^[0-9]{10}$/.test(val));
+            const isEmailValid = validateInput(loginStudentEmail, val => EMAIL_REGEX.test(val));
+            const isPhoneValid = validateInput(loginStudentPhone, val => PHONE_REGEX.test(val));
 
             if (isEmailValid && isPhoneValid) {
                 const email = loginStudentEmail.value.trim();
@@ -498,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
             payPanes.forEach(p => p.classList.remove('active'));
 
             btn.classList.add('active');
-            const targetPayMethod = btn.getAttribute('data-paymethod');
+            const targetPayMethod = btn.dataset.paymethod;
             state.paymentMethod = targetPayMethod;
 
             const targetPane = document.getElementById(`pay-pane-${targetPayMethod}`);
@@ -520,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Autoformat card number with spaces (1234 5678 1234 5678)
     payCardNum.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let val = e.target.value.replace(/\s+/g, '').replace(/\D/g, '');
         let formatted = '';
         for (let i = 0; i < val.length; i++) {
             if (i > 0 && i % 4 === 0) {
@@ -533,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Autoformat expiry with slash (MM/YY)
     payCardExp.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let val = e.target.value.replace(/\s+/g, '').replace(/\D/g, '');
         if (val.length >= 2) {
             e.target.value = val.substring(0, 2) + '/' + val.substring(2, 4);
         } else {
@@ -649,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Print functionality
     printSlipBtn.addEventListener('click', () => {
-        window.print();
+        globalThis.print();
     });
 
     // Reset flow
@@ -681,14 +699,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactMsg = document.getElementById('contact-msg');
 
         contactName.addEventListener('blur', () => validateInput(contactName, val => val.length >= 2));
-        contactEmail.addEventListener('blur', () => validateInput(contactEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val)));
+        contactEmail.addEventListener('blur', () => validateInput(contactEmail, val => EMAIL_REGEX.test(val)));
         contactMsg.addEventListener('blur', () => validateInput(contactMsg, val => val.length >= 10));
 
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const nameValid = validateInput(contactName, val => val.length >= 2);
-            const emailValid = validateInput(contactEmail, val => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val));
+            const emailValid = validateInput(contactEmail, val => EMAIL_REGEX.test(val));
             const msgValid = validateInput(contactMsg, val => val.length >= 10);
 
             if (nameValid && emailValid && msgValid) {
@@ -745,10 +763,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let source = serializer.serializeToString(svgElement);
 
         // Add namespaces
-        if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+        if (!/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/.test(source)) {
             source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
         }
-        if (!source.match(/^<svg[^>]+xmlns\:xlink="http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+        if (!/^<svg[^>]+xmlns:xlink="http:\/\/www\.w3\.org\/1999\/xlink"/.test(source)) {
             source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
         }
 
@@ -764,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadLink.download = "BCE_CCNA_Poster_QR_Access.svg";
         document.body.appendChild(downloadLink);
         downloadLink.click();
-        document.body.removeChild(downloadLink);
+        downloadLink.remove();
         
         showToast('SVG QR code template downloaded successfully.', 'success');
     });
@@ -772,31 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        Aesthetic Micro-Interactions & Toast System
        ========================================================================== */
-    const toast = document.getElementById('toast-alert');
-    const toastIcon = document.getElementById('toast-icon');
-    const toastMsg = document.getElementById('toast-message');
-    let toastTimeout;
-
-    function showToast(message, type = 'success') {
-        clearTimeout(toastTimeout);
-        toastMsg.textContent = message;
-        toast.className = 'toast-alert'; // reset class
-        
-        if (type === 'success') {
-            toast.classList.add('active', 'success');
-            toastIcon.setAttribute('data-lucide', 'check-circle-2');
-        } else if (type === 'error') {
-            toast.classList.add('active', 'error');
-            toastIcon.setAttribute('data-lucide', 'alert-circle');
-        }
-
-        // Redraw lucide icon for dynamic class shifts
-        lucide.createIcons();
-
-        toastTimeout = setTimeout(() => {
-            toast.classList.remove('active');
-        }, 4000);
-    }
+    // Toast system showToast is defined in the global/outer scope.
 
     /* ==========================================================================
        Mentor Access & Analytics Dashboard
@@ -1027,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.download = "ccna_class_reminders.ics";
                 document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);
+                link.remove();
                 
                 showToast('Class schedule (.ics) downloaded! Add it to your calendar application.', 'success');
             } catch (err) {
@@ -1040,9 +1034,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (enableNotificationsBtn) {
         enableNotificationsBtn.addEventListener('click', async () => {
             // Check if running inside Capacitor native wrapper
-            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) {
+            if (globalThis.Capacitor?.Plugins?.LocalNotifications) {
                 try {
-                    const LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
+                    const LocalNotifications = globalThis.Capacitor.Plugins.LocalNotifications;
                     const perm = await LocalNotifications.requestPermissions();
                     if (perm.display === 'granted') {
                         // Schedule notifications inside native Android app
@@ -1076,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error("Capacitor Notifications error:", e);
                     showToast('Failed to schedule local app reminders.', 'error');
                 }
-            } else if ('Notification' in window) {
+            } else if ('Notification' in globalThis) {
                 // Standard Web Browser Notification API
                 try {
                     const permission = await Notification.requestPermission();
@@ -1107,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateActiveBottomNavTab = () => {
         let currentSectionId = 'home';
-        const scrollPosition = window.scrollY + 160;
+        const scrollPosition = globalThis.scrollY + 160;
 
         scrollSections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -1119,13 +1113,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         bottomNavItems.forEach(item => {
             item.classList.remove('active');
-            if (item.getAttribute('data-section') === currentSectionId) {
+            if (item.dataset.section === currentSectionId) {
                 item.classList.add('active');
             }
         });
     };
 
-    window.addEventListener('scroll', updateActiveBottomNavTab);
+    globalThis.addEventListener('scroll', updateActiveBottomNavTab);
     updateActiveBottomNavTab(); // Highlight active tab immediately on load
     bottomNavItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -1135,9 +1129,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetSection) {
                 const headerOffset = 70;
                 const elementPosition = targetSection.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                const offsetPosition = elementPosition + globalThis.pageYOffset - headerOffset;
 
-                window.scrollTo({
+                globalThis.scrollTo({
                     top: offsetPosition,
                     behavior: 'smooth'
                 });
@@ -1160,17 +1154,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isOffline) {
             if (offlineNotification) offlineNotification.classList.add('active');
             showToast('You are currently offline. Pending entries will be saved locally.', 'warning');
-        } else {
-            if (offlineNotification && offlineNotification.classList.contains('active')) {
-                offlineNotification.classList.remove('active');
-                showToast('You are back online! Synchronizing offline data...', 'success');
-                syncOfflineData();
-            }
+        } else if (offlineNotification?.classList.contains('active')) {
+            offlineNotification.classList.remove('active');
+            showToast('You are back online! Synchronizing offline data...', 'success');
+            syncOfflineData();
         }
     }
 
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
+    globalThis.addEventListener('online', updateOnlineStatus);
+    globalThis.addEventListener('offline', updateOnlineStatus);
     
     if (!navigator.onLine && offlineNotification) {
         offlineNotification.classList.add('active');
@@ -1195,7 +1187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Custom PWA Install prompt handling
     let deferredPrompt;
 
-    window.addEventListener('beforeinstallprompt', (e) => {
+    globalThis.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         
@@ -1232,7 +1224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.addEventListener('appinstalled', (evt) => {
+    globalThis.addEventListener('appinstalled', (evt) => {
         console.log('CCNA Program BCE App installed successfully!');
         if (pwaInstallBanner) pwaInstallBanner.classList.remove('active');
         if (drawerInstallBtn) drawerInstallBtn.style.display = 'none';
@@ -1242,81 +1234,123 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        OFFLINE DATA STORAGE & SYNCHRONIZATION
        ========================================================================== */
-    function saveRegistrationOffline(regData) {
-        const queue = JSON.parse(localStorage.getItem('offline_registrations') || '[]');
-        if (!queue.some(r => r.email === regData.email)) {
-            queue.push(regData);
-            localStorage.setItem('offline_registrations', JSON.stringify(queue));
-            console.log('[Offline Sync] Stage registration:', regData.email);
-        }
-    }
-
-    function saveInquiryOffline(inqData) {
-        const queue = JSON.parse(localStorage.getItem('offline_inquiries') || '[]');
-        queue.push(inqData);
-        localStorage.setItem('offline_inquiries', JSON.stringify(queue));
-        console.log('[Offline Sync] Stage inquiry:', inqData.email);
-    }
-
-    async function syncOfflineData() {
-        if (!navigator.onLine) return;
-
-        const pendingRegs = JSON.parse(localStorage.getItem('offline_registrations') || '[]');
-        if (pendingRegs.length > 0) {
-            console.log(`[Offline Sync] Processing ${pendingRegs.length} pending registrations...`);
-            const remainingRegs = [];
-
-            for (const reg of pendingRegs) {
-                try {
-                    const res = await fetch(getApiUrl('/api/register'), {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(reg)
-                    });
-                    const data = await res.json();
-                    if (data.success || data.code === 'DUPLICATE_EMAIL') {
-                        console.log(`[Offline Sync] Synchronized registration: ${reg.email}`);
-                        showToast(`Pending registration for ${reg.name} synchronized successfully!`, 'success');
-                    } else {
-                        remainingRegs.push(reg);
-                    }
-                } catch (err) {
-                    console.warn(`[Offline Sync] Sync failed for ${reg.email}:`, err.message);
-                    remainingRegs.push(reg);
-                }
-            }
-            localStorage.setItem('offline_registrations', JSON.stringify(remainingRegs));
-        }
-
-        const pendingInquiries = JSON.parse(localStorage.getItem('offline_inquiries') || '[]');
-        if (pendingInquiries.length > 0) {
-            console.log(`[Offline Sync] Processing ${pendingInquiries.length} pending inquiries...`);
-            const remainingInqs = [];
-
-            for (const inq of pendingInquiries) {
-                try {
-                    const res = await fetch(getApiUrl('/api/inquiry'), {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(inq)
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        console.log(`[Offline Sync] Synchronized inquiry: ${inq.email}`);
-                        showToast(`Offline inquiry from ${inq.name} sent successfully!`, 'success');
-                    } else {
-                        remainingInqs.push(inq);
-                    }
-                } catch (err) {
-                    console.warn(`[Offline Sync] Sync failed for inquiry:`, err.message);
-                    remainingInqs.push(inq);
-                }
-            }
-            localStorage.setItem('offline_inquiries', JSON.stringify(remainingInqs));
-        }
-    }
-
     if (navigator.onLine) {
         syncOfflineData();
     }
 });
+
+/* ==========================================================================
+   OFFLINE DATA STORAGE & SYNCHRONIZATION (Outer Scope)
+   ========================================================================== */
+function saveRegistrationOffline(regData) {
+    const queue = JSON.parse(localStorage.getItem('offline_registrations') || '[]');
+    if (!queue.some(r => r.email === regData.email)) {
+        queue.push(regData);
+        localStorage.setItem('offline_registrations', JSON.stringify(queue));
+        console.log('[Offline Sync] Stage registration:', regData.email);
+    }
+}
+
+function saveInquiryOffline(inqData) {
+    const queue = JSON.parse(localStorage.getItem('offline_inquiries') || '[]');
+    queue.push(inqData);
+    localStorage.setItem('offline_inquiries', JSON.stringify(queue));
+    console.log('[Offline Sync] Stage inquiry:', inqData.email);
+}
+
+async function syncOfflineRegistrations() {
+    const pendingRegs = JSON.parse(localStorage.getItem('offline_registrations') || '[]');
+    if (pendingRegs.length === 0) return;
+
+    console.log(`[Offline Sync] Processing ${pendingRegs.length} pending registrations...`);
+    const remainingRegs = [];
+
+    for (const reg of pendingRegs) {
+        try {
+            const res = await fetch(getApiUrl('/api/register'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reg)
+            });
+            const data = await res.json();
+            if (data.success || data.code === 'DUPLICATE_EMAIL') {
+                console.log(`[Offline Sync] Synchronized registration: ${reg.email}`);
+                showToast(`Pending registration for ${reg.name} synchronized successfully!`, 'success');
+            } else {
+                remainingRegs.push(reg);
+            }
+        } catch (err) {
+            console.warn(`[Offline Sync] Sync failed for ${reg.email}:`, err.message);
+            remainingRegs.push(reg);
+        }
+    }
+    localStorage.setItem('offline_registrations', JSON.stringify(remainingRegs));
+}
+
+async function syncOfflineInquiries() {
+    const pendingInquiries = JSON.parse(localStorage.getItem('offline_inquiries') || '[]');
+    if (pendingInquiries.length === 0) return;
+
+    console.log(`[Offline Sync] Processing ${pendingInquiries.length} pending inquiries...`);
+    const remainingInqs = [];
+
+    for (const inq of pendingInquiries) {
+        try {
+            const res = await fetch(getApiUrl('/api/inquiry'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inq)
+            });
+            const data = await res.json();
+            if (data.success) {
+                console.log(`[Offline Sync] Synchronized inquiry: ${inq.email}`);
+                showToast(`Offline inquiry from ${inq.name} sent successfully!`, 'success');
+            } else {
+                remainingInqs.push(inq);
+            }
+        } catch (err) {
+            console.warn(`[Offline Sync] Sync failed for inquiry:`, err.message);
+            remainingInqs.push(inq);
+        }
+    }
+    localStorage.setItem('offline_inquiries', JSON.stringify(remainingInqs));
+}
+
+async function syncOfflineData() {
+    if (!navigator.onLine) return;
+    await syncOfflineRegistrations();
+    await syncOfflineInquiries();
+}
+
+/* ==========================================================================
+   Aesthetic Micro-Interactions & Toast System (Outer Scope)
+   ========================================================================== */
+let toastTimeout;
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast-alert');
+    const toastIcon = document.getElementById('toast-icon');
+    const toastMsg = document.getElementById('toast-message');
+    if (!toast || !toastIcon || !toastMsg) return;
+
+    clearTimeout(toastTimeout);
+    toastMsg.textContent = message;
+    toast.className = 'toast-alert'; // reset class
+    
+    if (type === 'success') {
+        toast.classList.add('active', 'success');
+        toastIcon.dataset.lucide = 'check-circle-2';
+    } else if (type === 'error') {
+        toast.classList.add('active', 'error');
+        toastIcon.dataset.lucide = 'alert-circle';
+    }
+
+    // Redraw lucide icon for dynamic class shifts
+    if (globalThis.lucide) {
+        globalThis.lucide.createIcons();
+    }
+
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('active');
+    }, 4000);
+}
