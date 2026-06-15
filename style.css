@@ -183,8 +183,8 @@ button {
 /* --- Glassmorphic Container & Layout --- */
 .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     box-shadow: var(--card-shadow);
@@ -362,8 +362,8 @@ button {
 .secondary-btn {
     border: 1px solid var(--border-color);
     background: rgba(var(--bg-card-rgb), 0.5);
-    backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
     color: var(--text-primary);
 }
 
@@ -3297,10 +3297,6 @@ label {
     cursor: pointer;
 }
 
-#drawer-install-btn {
-    display: none;
-}
-
 .reminders-card .card-desc-text {
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -3348,8 +3344,8 @@ label {
         width: calc(100% - 32px) !important;
         max-width: none !important;
         background: rgba(var(--bg-card-rgb), 0.85) !important;
-        backdrop-filter: var(--glass-blur) !important;
         -webkit-backdrop-filter: var(--glass-blur) !important;
+        backdrop-filter: var(--glass-blur) !important;
         border-radius: 16px !important;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
         padding: 16px !important;
@@ -3415,8 +3411,8 @@ label {
         right: 16px;
         height: 64px;
         background: rgba(var(--bg-card-rgb), 0.82) !important;
-        backdrop-filter: var(--glass-blur) !important;
         -webkit-backdrop-filter: var(--glass-blur) !important;
+        backdrop-filter: var(--glass-blur) !important;
         border: 1px solid rgba(var(--border-rgb), 0.4) !important;
         border-radius: 20px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08) !important;

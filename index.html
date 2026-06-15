@@ -30,10 +30,10 @@
     <!-- Google Fonts: Outfit (headings) & Inter (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" crossorigin="anonymous">
     
     <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
@@ -56,7 +56,7 @@
             </div>
             
             <!-- Desktop Nav Links -->
-            <nav class="desktop-nav">
+            <nav class="desktop-nav" aria-label="Desktop Navigation">
                 <a href="#home" class="nav-link active">Home</a>
                 <a href="#about" class="nav-link">About CoE</a>
                 <a href="#curriculum" class="nav-link">Curriculum</a>
@@ -97,7 +97,7 @@
             </div>
             <button id="close-drawer-btn" class="close-btn" aria-label="Close Navigation Drawer" title="Close Drawer"><i data-lucide="x"></i></button>
         </div>
-        <nav class="mobile-nav-links">
+        <nav class="mobile-nav-links" aria-label="Mobile Navigation">
             <a href="#home" class="mobile-link">Home</a>
             <a href="#about" class="mobile-link">About</a>
             <a href="#curriculum" class="mobile-link">Syllabus</a>
@@ -1325,7 +1325,7 @@
     </div>
 
     <!-- Bottom Navigation Bar for Mobile App Mode -->
-    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
         <a href="#home" class="bottom-nav-item active" data-section="home">
             <i data-lucide="home"></i>
             <span>Home</span>
