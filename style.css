@@ -33,9 +33,7 @@
     --warning-color: #e67e22;
     --purple-color: #862e9c;
 
-    --glass-blur: none;
-    --glass-bg: var(--bg-card);
-    --glass-border: var(--border-color);
+
     --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     --btn-shadow: none;
     
@@ -113,12 +111,10 @@ button {
     }
 }
 
-/* --- Glassmorphic Container & Layout --- */
-.glass-card {
-    background: var(--glass-bg);
-    -webkit-backdrop-filter: var(--glass-blur);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+/* --- Minimalist Container & Layout --- */
+.minimal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-shadow: var(--card-shadow);
     transition: var(--theme-transition);
@@ -197,11 +193,9 @@ button {
     width: 44px;
     object-fit: contain;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95); /* White glass morph container */
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 1.5px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     padding: 2px;
 }
 
@@ -294,9 +288,7 @@ button {
 
 .secondary-btn {
     border: 1px solid var(--border-color);
-    background: rgba(var(--bg-card-rgb), 0.5);
-    -webkit-backdrop-filter: var(--glass-blur);
-    backdrop-filter: var(--glass-blur);
+    background: var(--bg-card);
     color: var(--text-primary);
 }
 
