@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "name": "bce-ccna-training",
+  "builds": [
+    {
+      "src": "build-app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.html",
+      "status": 200
+    }
+  ],
+  "outputDirectory": "www",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

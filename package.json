@@ -1,0 +1,22 @@
+{
+  "name": "bce-ccna-training",
+  "version": "1.0.0",
+  "description": "BCE CCNA Certification Training Portal - Complete Full-Stack Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node build-app.js"
+  },
+  "keywords": [
+    "ccna",
+    "training",
+    "networking",
+    "certification",
+    "bce"
+  ],
+  "author": "Bahubali College of Engineering",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
