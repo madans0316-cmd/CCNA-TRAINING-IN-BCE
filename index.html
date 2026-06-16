@@ -1,1346 +1,839 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCNA Program BCE | Bahubali College of Engineering</title>
-    
-    <!-- PWA Integration -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    
-    <!-- iOS Safari PWA support -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CCNA BCE">
-    <link rel="apple-touch-icon" href="assets/icon-192.png">
-    <link rel="icon" type="image/png" href="assets/logo.png">
-    
-    <!-- Meta Descriptions for SEO -->
-    <meta name="description" content="Enroll in the CCNA Certification Training Program at Bahubali College of Engineering. 150 hours of extensive offline practical labs, network fundamentals, IPv4/IPv6, subnetting, routing, switching, and automation. Become CCNA ready!">
-    <meta name="keywords" content="CCNA, networking training, Cisco certification, Bahubali College of Engineering, practical networking labs, CCNA offline course, network security, subnetting">
-    <meta name="author" content="Bahubali College of Engineering">
-    
-    <!-- Open Graph for Social Sharing -->
-    <meta property="og:title" content="CCNA Program BCE - Bahubali College of Engineering">
-    <meta property="og:description" content="Launch your career in networking with 150 hours of hands-on practical labs at BCE Center of Excellence. Register online.">
-    <meta property="og:image" content="assets/hero.png">
-    <meta property="og:type" content="website">
-
-    <!-- Google Fonts: Outfit (headings) & Inter (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" crossorigin="anonymous">
-    
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCNA Certification Training Program | Bahubali College of Engineering</title>
+  <meta name="description" content="Launch your career in networking with BCE's CCNA Certification Training Program. 150 hours of practical labs, hybrid training model, and hands-on experience on real hardware.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
-<body>
-    
+<body class="auth-locked">
 
-    <!-- Header & Navigation -->
-    <header class="main-header minimal-card">
-        <div class="header-container">
-            <div class="brand-logo" id="brand-logo">
-                <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
-                <div class="logo-text">
-                    <span class="logo-title">CCNA PROGRAM BCE</span>
-                    <span class="logo-subtitle">Center of Excellence</span>
-                </div>
-            </div>
-            
-            <!-- Desktop Nav Links -->
-            <nav class="desktop-nav" aria-label="Desktop Navigation">
-                <a href="#home" class="nav-link active">Home</a>
-                <a href="#about" class="nav-link">About CoE</a>
-                <a href="#curriculum" class="nav-link">Curriculum</a>
-                <a href="#schedule" class="nav-link">Schedule</a>
-                <a href="#faq" class="nav-link">FAQs</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </nav>
+  <!-- BCE Loading Screen -->
+  <div id="loadingScreen">
+    <img src="assets/logo.jpg" alt="BCE College Logo" class="loading-logo">
+    <div class="loading-title">Bahubali College of Engineering</div>
+    <div class="loading-spinner"></div>
+  </div>
 
-            <!-- Action buttons -->
-            <div class="header-actions">
-                <!-- Mentor Access -->
-                <button id="mentor-access-btn" class="theme-btn" aria-label="Mentor Access" title="Mentor Portal">
-                    <i data-lucide="lock" class="lock-icon"></i>
-                </button>
-                <a href="#register" class="cta-btn primary-btn pulse-glow-btn">Register Now</a>
-                
-                <!-- Hamburger Menu for Mobile -->
-                <button id="mobile-menu-btn" class="hamburger-btn" aria-label="Open Menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </button>
-            </div>
+  <!-- Authentication Gate -->
+  <div id="authGate">
+    <div class="auth-card glass-card">
+      <div class="auth-header">
+        <img src="assets/logo.jpg" alt="BCE Logo">
+        <h2>BCE Networking COE</h2>
+        <p>CCNA Certification Training Portal</p>
+      </div>
+
+      <div class="auth-toggle">
+        <button class="auth-toggle-btn active" id="btnToggleSignIn">Sign In</button>
+        <button class="auth-toggle-btn" id="btnToggleSignUp">Sign Up</button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="signInForm" class="auth-form active" novalidate>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="authEmail">Email Address</label>
+          <input type="email" id="authEmail" class="form-control" placeholder="name@example.com" required>
+          <div class="invalid-feedback" id="authEmailError"></div>
         </div>
-    </header>
-
-    <!-- Mobile Drawer Navigation -->
-    <div class="mobile-drawer" id="mobile-drawer">
-        <div class="drawer-header">
-            <div class="brand-logo">
-                <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
-                <span class="logo-title">CCNA Program BCE</span>
-            </div>
-            <button id="close-drawer-btn" class="close-btn" aria-label="Close Navigation Drawer" title="Close Drawer"><i data-lucide="x"></i></button>
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
+          <div class="invalid-feedback" id="authPasswordError"></div>
         </div>
-        <nav class="mobile-nav-links" aria-label="Mobile Navigation">
-            <a href="#home" class="mobile-link">Home</a>
-            <a href="#about" class="mobile-link">About</a>
-            <a href="#curriculum" class="mobile-link">Syllabus</a>
-            <a href="#schedule" class="mobile-link">Schedules</a>
-            <a href="#register" class="mobile-link">Registration</a>
-            <a href="#" id="mobile-mentor-btn" class="mobile-link"><i data-lucide="lock" class="icon-xs align-middle-mr4"></i> Mentor Portal</a>
-            <a href="#" id="drawer-install-btn" class="mobile-link"><i data-lucide="download" class="icon-xs align-middle-mr4"></i> Install App</a>
-        </nav>
+        <button type="submit" class="btn btn-primary w-full">Access Portal</button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="signUpForm" class="auth-form" novalidate>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" required>
+          <div class="invalid-feedback" id="regEmailError"></div>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="regPassword">Password</label>
+          <input type="password" id="regPassword" class="form-control" placeholder="Create password" required>
+          <div class="invalid-feedback" id="regPasswordError"></div>
+        </div>
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="regPasswordConfirm">Confirm Password</label>
+          <input type="password" id="regPasswordConfirm" class="form-control" placeholder="Confirm password" required>
+          <div class="invalid-feedback" id="regPasswordConfirmError"></div>
+        </div>
+        <button type="submit" class="btn btn-accent w-full">Create Account</button>
+      </form>
+
+      <div class="auth-footer">
+        Bahubali College of Engineering &copy; 2026
+      </div>
     </div>
-    <div class="drawer-overlay" id="drawer-overlay"></div>
+  </div>
 
-    <!-- Main Content -->
-    <main>
+  <!-- Background Glows -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Header & Navigation -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#" class="logo-area">
+        <img src="assets/logo.jpg" alt="BCE Logo" class="college-logo">
+        <div class="logo-text">
+          <span class="college-name">Bahubali College of Engineering</span>
+          <span class="dept-name">Centre of Excellence for Networking</span>
+        </div>
+      </a>
+      
+      <nav class="main-nav" id="mainNav">
+        <ul>
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#curriculum" class="nav-link">Curriculum</a></li>
+          <li><a href="#schedule" class="nav-link">Schedule</a></li>
+          <li><a href="#registration" class="nav-link">Register</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+          <li><a href="mentor.html" target="_blank" class="nav-link" style="color: var(--color-accent);" title="Mentor Access"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-svg" style="vertical-align: middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></a></li>
+          <li><a href="#" id="btnLogOut" class="nav-link" style="color: #ef4444;" title="Sign Out"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg" style="vertical-align: middle;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Mobile Register Link -->
+        <a href="#registration" class="btn btn-primary btn-sm mobile-register-btn">Register Now</a>
+
+        <a href="mentor.html" target="_blank" class="btn btn-outline nav-cta" style="margin-right: 8px; border-color: var(--color-accent); color: var(--color-accent); padding: 10px;" title="Mentor Access"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></a>
+        <button id="btnHeaderLogOut" class="btn btn-outline nav-cta" style="margin-right: 8px; border-color: #ef4444; color: #ef4444; padding: 10px;" title="Sign Out"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+        <a href="#registration" class="btn btn-primary nav-cta">Apply Now</a>
         
-        <!-- Hero Section -->
-        <section id="home" class="hero-section scroll-section">
-            <div class="section-container hero-container">
-                <div class="hero-content">
-                    <div class="badge-tag">
-                        <i data-lucide="shield-check" class="icon-sm"></i>
-                        <span>Cisco CCNA Certification Path</span>
-                    </div>
-                    <h1 class="hero-title">Launch Your Career <br><span class="gradient-text">In Networking!</span></h1>
-                    <p class="hero-description">
-                        Join the offline CCNA training program at Bahubali College of Engineering. Master industry standards with 150 hours of intensive hands-on labs in our state-of-the-art Center of Excellence.
-                    </p>
-                    
-                    <div class="hero-stats">
-                        <div class="stat-card minimal-card">
-                            <span class="stat-num">150+</span>
-                            <span class="stat-lbl">Lab Hours</span>
-                        </div>
-                        <div class="stat-card minimal-card">
-                            <span class="stat-num">Offline</span>
-                            <span class="stat-lbl">Fri & Sat Sessions</span>
-                        </div>
-                        <div class="stat-card minimal-card">
-                            <span class="stat-num">100%</span>
-                            <span class="stat-lbl">Practical Focus</span>
-                        </div>
-                    </div>
-                    
-                    <div class="hero-actions-row">
-                        <a href="#register" class="hero-btn primary-btn shadow-btn">Register for CCNA</a>
-                        <a href="#curriculum" class="hero-btn secondary-btn"><i data-lucide="book-open"></i> View Syllabus</a>
-                    </div>
-                </div>
-                
-                <div class="hero-visual">
-                    <div class="image-wrapper minimal-card">
-                        <img src="assets/hero.png" alt="Futuristic Network Infrastructure Illustration" class="hero-img">
-                        <div class="floating-badge badge-top-right minimal-card">
-                            <i data-lucide="award" class="accent-color"></i>
-                            <div>
-                                <span class="badge-title">Industry Ready</span>
-                                <span class="badge-desc">Certificate on Completion</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- 3-Dot Kebab Menu Toggle -->
+        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="icon-svg"><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="badge-accent">Course Starts: 17th July 2026</div>
+          <h1 class="hero-title">Launch Your Career <br><span class="gradient-text">In Networking!</span></h1>
+          <p class="hero-subtitle">CCNA Certification Training Program with <strong>150 Hours</strong> of intense practical labs. Learn IPv4/v6 subnetting, routing protocols, switches, security, and automation on real hardware.</p>
+          
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num">150</span>
+              <span class="stat-label">Lab Hours</span>
             </div>
+            <div class="stat-item">
+              <span class="stat-num">Real</span>
+              <span class="stat-label">Hardware Labs</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">Offline</span>
+              <span class="stat-label">Training Model</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#registration" class="btn btn-primary btn-lg">Register For CCNA</a>
+            <button class="btn btn-outline btn-lg" id="viewPosterBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              View Flyer Details
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="glass-card lab-image-card animate-float">
+            <img src="assets/ccna_lab.png" alt="CCNA Practical Lab Room" class="lab-room-img">
+            <div class="lab-image-overlay">
+              <h4>BCE CCNA Lab Room</h4>
+              <p>150 Hours of Physical Practical Lab Sessions</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">About The Program</span>
+          <h2 class="section-title">Centre of Excellence for Networking</h2>
+          <p class="section-desc">Delivered by the Bahubali College of Engineering, Shravanabelagola (Affiliated to VTU Belagavi & Approved by AICTE, New Delhi). An offline intensive program focused on industry readiness.</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-info-panel">
+            <h3 class="subsection-title">Become CCNA Ready</h3>
+            <p class="about-text">In today's highly connected digital world, computer networking forms the backbone of every enterprise. This certification training program provides students and professionals with hands-on, practical expertise to design, configure, manage, and troubleshoot enterprise networks.</p>
             
-            <div class="scroll-down-indicator">
-                <a href="#about" aria-label="Scroll down to About section"><i data-lucide="chevron-down" class="bounce"></i></a>
+            <div class="key-highlights">
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div>
+                  <h4>Hands-on Training Model</h4>
+                  <p>Extensive configuration exercises using both Cisco Packet Tracer and Real Cisco Hardware racks.</p>
+                </div>
+              </div>
+
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div>
+                  <h4>Dedicated Laboratorian Support</h4>
+                  <p>Always-on assistance from lab engineers to help you build real topologies and resolve physical patch issues.</p>
+                </div>
+              </div>
+
+              <div class="highlight-item">
+                <div class="highlight-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div>
+                  <h4>Cisco CCNA Certification Prep</h4>
+                  <p>Direct preparation mapped to the official Cisco CCNA exam blueprint, assuring job-readiness.</p>
+                </div>
+              </div>
             </div>
-        </section>
-
-        <!-- Session Banner Alert (Poster Promo) -->
-        <section class="banner-promo-section">
-            <div class="section-container">
-                <div class="promo-banner minimal-card">
-                    <div class="promo-text">
-                        <h2 class="promo-heading">BECOME INDUSTRY READY. BECOME CCNA READY.</h2>
-                        <p class="promo-sub">Limited Seats Available. Complete your secure online enrollment below.</p>
-                    </div>
-                    <div class="promo-action">
-                        <span class="deadline-badge"><i data-lucide="calendar"></i> Batch Starting: July 17, 2026</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about-section scroll-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <span class="section-subtitle">THE INSTITUTION & THE HUB</span>
-                    <h2 class="section-title">Center of Excellence for Networking</h2>
-                    <div class="header-divider"></div>
-                </div>
-
-                <div class="about-grid">
-                    <div class="about-info-panel minimal-card animate-on-scroll">
-                        <div class="info-icon-wrapper">
-                            <i data-lucide="graduation-cap"></i>
-                        </div>
-                        <h3>Bahubali College of Engineering</h3>
-                        <p class="inst-subtitle">Shravanabelagola - 573 135 (Managed by S.S.D.J. Jnana Prasara Sangha)</p>
-                        <p class="about-para">
-                            Established to deliver quality engineering education, BCE houses the specialized <strong>Center of Excellence (CoE) for Networking</strong>. The CoE is equipped with real-world Cisco routing and switching hardware, allowing engineering students, IT aspirants, and faculty members to bridge the gap between classroom theory and enterprise network implementation.
-                        </p>
-                        
-                        <div class="ideal-candidates">
-                            <h4>Ideal Candidates For This Program:</h4>
-                            <ul class="ideal-list">
-                                <li><i data-lucide="check-circle" class="list-bullet"></i> Engineering & Tech Students seeking career paths</li>
-                                <li><i data-lucide="check-circle" class="list-bullet"></i> IT Job Seekers aiming for certified profiles</li>
-                                <li><i data-lucide="check-circle" class="list-bullet"></i> Faculty members seeking professional development</li>
-                                <li><i data-lucide="check-circle" class="list-bullet"></i> Candidates preparing for campus placement rounds</li>
-                                <li><i data-lucide="check-circle" class="list-bullet"></i> Higher education aspirants in Cybersecurity/Cloud systems</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Coordinator Profile Card -->
-                    <div class="coordinator-card minimal-card animate-on-scroll">
-                        <div class="coordinator-avatar-wrapper">
-                            <img src="assets/coordinator.png" alt="Mr. S. Deepak - Program Coordinator" class="coordinator-avatar-img">
-                        </div>
-                        <div class="coordinator-meta">
-                            <span class="coord-title">Program Coordinator</span>
-                            <h3>Mr. S. Deepak</h3>
-                            <span class="coord-designation">Assistant Professor / ECE</span>
-                            <span class="coord-role">Head - CoE for Networking</span>
-                            <span class="coord-institution">Bahubali College of Engineering</span>
-                        </div>
-                        <div class="coordinator-contact-info">
-                            <a href="tel:+917339248886" class="coord-contact-item">
-                                <i data-lucide="phone" class="phone-color"></i>
-                                <span>+91 7339248886</span>
-                            </a>
-                            <a href="mailto:sdeepak.bce@gmail.com" class="coord-contact-item">
-                                <i data-lucide="mail" class="mail-color"></i>
-                                <span>sdeepak.bce@gmail.com</span>
-                            </a>
-                        </div>
-                        <div class="coordinator-badge">
-                            <i data-lucide="shield-check" class="badge-icon"></i>
-                            <span>Authorized CoE Program Lead</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Course Coverage / Curriculum Section -->
-        <section id="curriculum" class="curriculum-section scroll-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <span class="section-subtitle">DETAILED SYLLABUS</span>
-                    <h2 class="section-title">Course Coverage & Practical Labs</h2>
-                    <p class="section-desc">Click on any module to explore topics, tools used, and lab details included in the 150 hours of offline training.</p>
-                    <div class="header-divider"></div>
-                </div>
-
-                <div class="curriculum-layout">
-                    <!-- Left Sidebar Modules List -->
-                    <div class="curriculum-sidebar">
-                        <button class="syllabus-tab-btn active" data-module="1">
-                            <span class="tab-num">01</span>
-                            <span class="tab-title">Network Fundamentals</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="2">
-                            <span class="tab-num">02</span>
-                            <span class="tab-title">IPv4 & IPv6 Addressing</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="3">
-                            <span class="tab-num">03</span>
-                            <span class="tab-title">Subnetting Mastery</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="4">
-                            <span class="tab-num">04</span>
-                            <span class="tab-title">VLAN & Switching Basics</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="5">
-                            <span class="tab-num">05</span>
-                            <span class="tab-title">Routing Protocols (OSPF)</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="6">
-                            <span class="tab-num">06</span>
-                            <span class="tab-title">Network Security Principles</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="7">
-                            <span class="tab-num">07</span>
-                            <span class="tab-title">Wireless Networking</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                        <button class="syllabus-tab-btn" data-module="8">
-                            <span class="tab-num">08</span>
-                            <span class="tab-title">Automation & Programmability</span>
-                            <i data-lucide="chevron-right" class="tab-arrow"></i>
-                        </button>
-                    </div>
-
-                    <!-- Right Detail Panel -->
-                    <div class="curriculum-detail-panel minimal-card">
-                        <!-- Module 1 Detail -->
-                        <div class="module-detail-content active" id="mod-content-1">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 01</span>
-                                <h3>Network Fundamentals</h3>
-                            </div>
-                            <p class="module-desc">Understand how networks operate. Master the foundations of computer communication and the stack layers that enable global connectivity.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> TCP/IP and OSI Reference Models</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Roles of Routers, Switches, Endpoints, and Servers</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Network Topologies & Physical cabling (Fiber, Copper, Wireless)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Introduction to WAN, LAN, and Cloud models</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Setting up basic physical cabling, mapping out LAN layouts, and establishing simple host-to-host connectivity using Cisco terminal consoles.</p>
-                                <span class="tool-badge"><i data-lucide="terminal"></i> Cisco CLI</span>
-                                <span class="tool-badge"><i data-lucide="cpu"></i> Physical RJ-45 Crimping Tool</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 2 Detail -->
-                        <div class="module-detail-content" id="mod-content-2">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 02</span>
-                                <h3>IPv4 & IPv6 Addressing</h3>
-                            </div>
-                            <p class="module-desc">Deep dive into IP addressing architectures. Learn to catalog, allocate, and plan address spaces for various sizes of enterprises.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> Structure of IPv4 addresses & Classful vs Classless addressing</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Private vs Public IP addresses (NAT/PAT concepts)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> IPv6 addressing format, abbreviation, and prefix types</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Dual-stacking, tunneling, and translation</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Configuring static IP addresses on endpoints and router interfaces. Setting up dual-stack IPv4/IPv6 networks and confirming cross-protocol pings.</p>
-                                <span class="tool-badge"><i data-lucide="settings"></i> Cisco IOS Configuration</span>
-                                <span class="tool-badge"><i data-lucide="activity"></i> Wireshark Packet Sniffing</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 3 Detail -->
-                        <div class="module-detail-content" id="mod-content-3">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 03</span>
-                                <h3>Subnetting Mastery</h3>
-                            </div>
-                            <p class="module-desc">Develop speed and accuracy in dividing IP address ranges. Ensure zero address waste and optimal broadcast domain boundaries.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> Binary arithmetic for networking professionals</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Variable Length Subnet Masking (VLSM) algorithms</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Calculating network addresses, broadcast addresses, and usable ranges</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Summarizing subnets to reduce routing table overhead</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Intensive offline workshops solving real-world subnet planning case studies. Configuring subnets across large multi-department networks on Cisco Packet Tracer.</p>
-                                <span class="tool-badge"><i data-lucide="code-2"></i> VLSM Calculators</span>
-                                <span class="tool-badge"><i data-lucide="layout"></i> Cisco Packet Tracer Simulation</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 4 Detail -->
-                        <div class="module-detail-content" id="mod-content-4">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 04</span>
-                                <h3>VLAN & Switching Basics</h3>
-                            </div>
-                            <p class="module-desc">Segment local networks securely. Master layer 2 connectivity, traffic isolation, and redundancy protocols.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> Broadcast domains separation using Virtual LANs (VLANs)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> 802.1Q Trunking protocols and DTP concepts</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Inter-VLAN Routing (Router-on-a-Stick & Layer 3 Switches)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Spanning Tree Protocol (STP) and Rapid STP concepts</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Creating VLANs, assigning ports, creating 802.1Q trunks, configuring sub-interfaces on routers, and troubleshooting STP topology loops on physical Catalysts.</p>
-                                <span class="tool-badge"><i data-lucide="hard-drive"></i> Cisco Catalyst 2960/3560 Switches</span>
-                                <span class="tool-badge"><i data-lucide="git-pull-request"></i> Inter-VLAN trunks</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 5 Detail -->
-                        <div class="module-detail-content" id="mod-content-5">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 05</span>
-                                <h3>Routing Protocols (OSPF)</h3>
-                            </div>
-                            <p class="module-desc">Configure dynamic path discovery to make networks resilient and highly scalable using link-state routing.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> Static vs Dynamic Routing mechanisms</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Link-State routing concepts and Dijkstra's algorithm</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Single-area and Multi-area OSPF v2 & v3</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> OSPF neighbor states, DR/BDR election, metrics, and configuration</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Setting up OSPF on multi-router topologies. Modifying interface costs to influence pathways, and resolving OSPF neighbor adjacency failures on real-world Cisco routers.</p>
-                                <span class="tool-badge"><i data-lucide="route"></i> Cisco 1941/2911 Routers</span>
-                                <span class="tool-badge"><i data-lucide="file-json"></i> Routing Table Diagnostics</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 6 Detail -->
-                        <div class="module-detail-content" id="mod-content-6">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 06</span>
-                                <h3>Network Security Principles</h3>
-                            </div>
-                            <p class="module-desc">Secure the edge. Prevent unauthorized network access, isolate threats, and implement device hardening policies.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> Threat landscape: DoS, spoofing, man-in-the-middle</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Port Security on Access Switches (Static, Sticky, Violation actions)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Standard and Extended Access Control Lists (ACLs)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> AAA framework (Authentication, Authorization, Accounting)</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Implementing Port Security to lock down Ethernet ports, writing extended ACL rules to block specific ports (e.g. HTTP, SSH) while permitting pings.</p>
-                                <span class="tool-badge"><i data-lucide="lock"></i> Switch Port Security</span>
-                                <span class="tool-badge"><i data-lucide="filter"></i> Access Control Lists (ACL)</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 7 Detail -->
-                        <div class="module-detail-content" id="mod-content-7">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 07</span>
-                                <h3>Wireless Networking</h3>
-                            </div>
-                            <p class="module-desc">Understand mobility architectures. Set up secure enterprise wireless environments supporting hundreds of clients.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> AP Modes: Autonomous vs Lightweight APs</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Wireless Lan Controller (WLC) management architectures</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> WPA2/WPA3 encryption and enterprise authentication</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> RF bands, channels, and interference mitigation</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Accessing and configuring a mock Cisco WLC GUI, establishing SSIDs, mapping them to specific VLANs, and authenticating remote clients using WPA2-Enterprise.</p>
-                                <span class="tool-badge"><i data-lucide="wifi"></i> Cisco WLC GUI Console</span>
-                                <span class="tool-badge"><i data-lucide="network"></i> Lightweight Access Points</span>
-                            </div>
-                        </div>
-
-                        <!-- Module 8 Detail -->
-                        <div class="module-detail-content" id="mod-content-8">
-                            <div class="detail-header">
-                                <span class="module-lbl">Module 08</span>
-                                <h3>Automation & Programmability</h3>
-                            </div>
-                            <p class="module-desc">Transition to modern software-defined workflows. Learn to configure networks using scripts and APIs rather than single CLI entries.</p>
-                            
-                            <div class="detail-block">
-                                <h4>Key Topics Covered</h4>
-                                <ul class="topics-grid">
-                                    <li><i data-lucide="check" class="text-primary"></i> Controller-based networking vs traditional management</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> REST APIs & JSON data formats for network status</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Configuration management tools (Ansible, Puppet, Chef basics)</li>
-                                    <li><i data-lucide="check" class="text-primary"></i> Cisco DNA Center (Catalyst Center) features</li>
-                                </ul>
-                            </div>
-
-                            <div class="detail-block">
-                                <h4>Hands-on Practical Labs</h4>
-                                <p class="lab-desc">Parsing JSON device configurations, executing mock REST API GET calls to gather network interface reports, and writing basic Ansible Playbooks to roll out VLANs.</p>
-                                <span class="tool-badge"><i data-lucide="terminal"></i> Python / Ansible scripts</span>
-                                <span class="tool-badge"><i data-lucide="globe"></i> REST client / Postman API</span>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Training Model & Schedule Section -->
-        <section id="schedule" class="schedule-section scroll-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <span class="section-subtitle">BATCH TIMELINE & MODEL</span>
-                    <h2 class="section-title">Schedule & Laboratory Details</h2>
-                    <div class="header-divider"></div>
-                </div>
-
-                <div class="schedule-grid">
-                    
-                    <!-- Training Model Card -->
-                    <div class="schedule-card minimal-card">
-                        <div class="card-icon"><i data-lucide="calendar-days"></i></div>
-                        <h3>Offline Training Model</h3>
-                        <div class="timeline-items">
-                            <div class="timeline-item">
-                                <i data-lucide="check-square" class="tick-icon"></i>
-                                <div>
-                                    <strong>Fridays & Saturdays Only</strong>
-                                    <p>Structured full-day sessions allowing professional/academic alignment.</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <i data-lucide="check-square" class="tick-icon"></i>
-                                <div>
-                                    <strong>150 Hours of Total Engagement</strong>
-                                    <p>Comprehensive layout with a minimum of 80 hours spent directly on terminal CLI execution.</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <i data-lucide="check-square" class="tick-icon"></i>
-                                <div>
-                                    <strong>Authorized Course Completion Certificate</strong>
-                                    <p>Earn an industry-recognized certificate from BCE's CoE to display on LinkedIn.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Venue & Timings Card -->
-                    <div class="schedule-card minimal-card">
-                        <div class="card-icon"><i data-lucide="map-pin"></i></div>
-                        <h3>Laboratory Venue & Timings</h3>
-                        <div class="timeline-items">
-                            <div class="timeline-item">
-                                <i data-lucide="map" class="tick-icon"></i>
-                                <div>
-                                    <strong>Center of Excellence for Networking</strong>
-                                    <p>Bahubali College of Engineering Campus, Shravanabelagola, Hassan District, Karnataka - 573135.</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <i data-lucide="clock" class="tick-icon"></i>
-                                <div>
-                                    <strong>Timings & Attendance</strong>
-                                    <p>Fridays & Saturdays: 9:00 AM to 5:00 PM. Includes structured lab assignments and assessment rounds.</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <i data-lucide="users" class="tick-icon"></i>
-                                <div>
-                                    <strong>Batch Size</strong>
-                                    <p>Limited to 40 Seats per batch to ensure dedicated rack access for all candidates.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Class Reminders & Alerts Card -->
-                    <div class="schedule-card minimal-card reminders-card">
-                        <div class="card-icon"><i data-lucide="bell-ring" class="pulse-bell"></i></div>
-                        <h3>Class Calendar & Reminders</h3>
-                        <p class="card-desc-text">
-                            Synchronize your class timings (Fridays & Saturdays starting July 17, 2026) directly with your mobile or desktop device.
-                        </p>
-                        <div class="reminder-buttons">
-                            <button id="add-to-calendar-btn" class="cta-btn primary-btn btn-sm">
-                                <i data-lucide="calendar"></i> Sync Calendar (.ICS)
-                            </button>
-                            <button id="enable-notifications-btn" class="cta-btn secondary-btn btn-sm">
-                                <i data-lucide="bell"></i> Enable Web Alerts
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- Registration & Secure Payment Gateway Portal -->
-        <section id="register" class="register-section scroll-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <span class="section-subtitle">ADMISSION PORTAL</span>
-                    <h2 class="section-title">Course Registration & Fees</h2>
-                    <p class="section-desc">Complete the secured multi-step online form to register and reserve your CCNA laboratory seat.</p>
-                    <div class="header-divider"></div>
-                </div>
-
-                <!-- Registration Wizard Card -->
-                <div class="wizard-container minimal-card">
-                    <!-- Progress Bar Header -->
-                    <div class="wizard-steps-header">
-                        <div class="step-indicator active" id="step-ind-1">
-                            <span class="ind-num">1</span>
-                            <span class="ind-text">Registration Info</span>
-                        </div>
-                        <div class="step-indicator" id="step-ind-2">
-                            <span class="ind-num">2</span>
-                            <span class="ind-text">Payment Gateway</span>
-                        </div>
-                        <div class="step-indicator" id="step-ind-3">
-                            <span class="ind-num">3</span>
-                            <span class="ind-text">Admission Slip</span>
-                        </div>
-                    </div>
-
-                    <!-- Wizard Body -->
-                    <div class="wizard-body">
-                        
-                        <!-- Step 1: Registration / Verification -->
-                        <div class="wizard-step-pane active" id="wizard-step-1">
-                            <div class="nested-tabs-header">
-                                <button type="button" class="nested-tab-btn active" id="nested-tab-new">
-                                    <i data-lucide="user-plus"></i> New Registration
-                                </button>
-                                <button type="button" class="nested-tab-btn" id="nested-tab-verify">
-                                    <i data-lucide="user-check"></i> Verify / Sign In
-                                </button>
-                            </div>
-
-                            <!-- Duplicate Warning -->
-                            <div id="duplicate-warning-block" class="form-disclaimer minimal-card">
-                                <i data-lucide="alert-circle" class="text-error"></i>
-                                <div class="text-left">
-                                    <h5 class="warning-title">Duplicate Email Detected</h5>
-                                    <p class="warning-text">An application with this email already exists. Please select the <strong>Verify / Sign In</strong> tab above, then enter your registered email and mobile number to complete payment or access your admission slip.</p>
-                                </div>
-                            </div>
-
-                            <!-- Form Pane 1: New Sign-Up -->
-                            <div class="nested-pane active" id="nested-pane-new">
-                                <form id="registration-form" novalidate>
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label for="reg-name">Full Name <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="user" class="input-icon"></i>
-                                                <input type="text" id="reg-name" placeholder="Enter your full name" required minlength="3">
-                                            </div>
-                                            <span class="error-msg" id="err-reg-name">Please enter your full name (at least 3 characters).</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="reg-email">Email Address <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="mail" class="input-icon"></i>
-                                                <input type="email" id="reg-email" placeholder="example@domain.com" required>
-                                            </div>
-                                            <span class="error-msg" id="err-reg-email">Please enter a valid email address.</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="reg-phone">Mobile Number <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="phone" class="input-icon"></i>
-                                                <input type="tel" id="reg-phone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
-                                            </div>
-                                            <span class="error-msg" id="err-reg-phone">Please enter a valid 10-digit mobile number.</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="reg-role">Current Profile / Role <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="briefcase" class="input-icon"></i>
-                                                <select id="reg-role" required>
-                                                    <option value="" disabled selected>Select your profile</option>
-                                                    <option value="student">Engineering Student</option>
-                                                    <option value="jobseeker">IT Job Seeker</option>
-                                                    <option value="faculty">Faculty Member</option>
-                                                    <option value="other">Other Professional</option>
-                                                </select>
-                                            </div>
-                                            <span class="error-msg" id="err-reg-role">Please select your current profile.</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="reg-college">Institution / College / Company <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="landmark" class="input-icon"></i>
-                                                <input type="text" id="reg-college" placeholder="Name of institution or workplace" required>
-                                            </div>
-                                            <span class="error-msg" id="err-reg-college">Please enter your institution/workplace.</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="reg-dept">Department / Branch <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="layers" class="input-icon"></i>
-                                                <input type="text" id="reg-dept" placeholder="e.g. ECE, CSE, IT" required>
-                                            </div>
-                                            <span class="error-msg" id="err-reg-dept">Please enter your department/branch.</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-disclaimer minimal-card">
-                                        <i data-lucide="info" class="text-accent"></i>
-                                        <p>Upon clicking "Proceed to Fee Payment", you will review your pricing breakdown. A secure mock sandbox checkout environment is used for verification.</p>
-                                    </div>
-
-                                    <div class="wizard-actions">
-                                        <button type="submit" class="cta-btn primary-btn shadow-btn">Proceed to Fee Payment <i data-lucide="arrow-right"></i></button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- Form Pane 2: Verify / Sign-In -->
-                            <div class="nested-pane" id="nested-pane-verify">
-                                <form id="student-login-form" novalidate>
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label for="login-student-email">Email Address <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="mail" class="input-icon"></i>
-                                                <input type="email" id="login-student-email" placeholder="Enter your registered email" required>
-                                            </div>
-                                            <span class="error-msg" id="err-login-student-email">Please enter a valid email address.</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="login-student-phone">Mobile Number <span class="req">*</span></label>
-                                            <div class="input-wrapper">
-                                                <i data-lucide="phone" class="input-icon"></i>
-                                                <input type="tel" id="login-student-phone" placeholder="Enter your 10-digit mobile number" required pattern="[0-9]{10}">
-                                            </div>
-                                            <span class="error-msg" id="err-login-student-phone">Please enter your registered 10-digit mobile number.</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-disclaimer minimal-card mt-24">
-                                        <i data-lucide="shield-check" class="text-accent"></i>
-                                        <p>Sign-in details act as secure checks. If payment was completed, you'll be redirected directly to your admission receipt. If payment is pending, you'll proceed to checkout.</p>
-                                    </div>
-
-                                    <div class="wizard-actions">
-                                        <button type="submit" class="cta-btn primary-btn shadow-btn">Verify & Proceed <i data-lucide="arrow-right"></i></button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Step 2: Payment Portal -->
-                        <div class="wizard-step-pane" id="wizard-step-2">
-                            <div class="payment-layout">
-                                <!-- Fees Summary Panel -->
-                                <div class="summary-panel minimal-card">
-                                    <h4>Enrollment Summary</h4>
-                                    <div class="summary-line">
-                                        <span>Course Fee:</span>
-                                        <span class="amount-val">₹5,000</span>
-                                    </div>
-                                    <div class="summary-line total-line">
-                                        <span>Grand Total:</span>
-                                        <span class="amount-val total-amt">₹5,000</span>
-                                    </div>
-                                    
-                                    <div class="secure-badge">
-                                        <i data-lucide="shield-check" class="text-success"></i>
-                                        <span>256-bit SSL Secure Checkout</span>
-                                    </div>
-                                </div>
-
-                                <!-- Payment Selector Portal -->
-                                <div class="payment-portal-panel">
-                                    <div class="payment-tabs-header">
-                                        <button class="pay-tab-btn active" data-paymethod="upi">
-                                            <i data-lucide="smartphone"></i> UPI / QR
-                                        </button>
-                                    </div>
-
-                                    <div class="payment-tab-content">
-                                        <!-- UPI QR Content -->
-                                        <div class="pay-pane active" id="pay-pane-upi">
-                                            <div class="upi-flow-layout">
-                                                <div class="qr-box-wrapper minimal-card">
-                                                    <!-- Dynamic visual representation of a payment scan QR -->
-                                                    <div class="svg-qr-payment">
-                                                        <!-- Clean SVG pattern simulating QR -->
-                                                        <svg viewBox="0 0 100 100" class="qr-vector">
-                                                            <rect width="100" height="100" fill="#ffffff"/>
-                                                            <!-- Corners -->
-                                                            <rect x="5" y="5" width="25" height="25" fill="#0b0f19" stroke="#00e5ff" stroke-width="2"/>
-                                                            <rect x="10" y="10" width="15" height="15" fill="#ffffff"/>
-                                                            <rect x="13" y="13" width="9" height="9" fill="#0b0f19"/>
-
-                                                            <rect x="70" y="5" width="25" height="25" fill="#0b0f19" stroke="#00e5ff" stroke-width="2"/>
-                                                            <rect x="75" y="10" width="15" height="15" fill="#ffffff"/>
-                                                            <rect x="78" y="13" width="9" height="9" fill="#0b0f19"/>
-
-                                                            <rect x="5" y="70" width="25" height="25" fill="#0b0f19" stroke="#00e5ff" stroke-width="2"/>
-                                                            <rect x="10" y="75" width="15" height="15" fill="#ffffff"/>
-                                                            <rect x="13" y="78" width="9" height="9" fill="#0b0f19"/>
-
-                                                            <!-- Random blocks -->
-                                                            <rect x="40" y="10" width="10" height="20" fill="#0b0f19"/>
-                                                            <rect x="55" y="5" width="10" height="10" fill="#0b0f19"/>
-                                                            <rect x="45" y="40" width="15" height="15" fill="#0b0f19"/>
-                                                            <rect x="15" y="45" width="20" height="10" fill="#0b0f19"/>
-                                                            <rect x="75" y="45" width="15" height="20" fill="#0b0f19"/>
-                                                            <rect x="40" y="70" width="10" height="25" fill="#0b0f19"/>
-                                                            <rect x="60" y="75" width="20" height="10" fill="#0b0f19"/>
-                                                            <rect x="65" y="60" width="5" height="5" fill="#0b0f19"/>
-                                                        </svg>
-                                                        <div class="qr-center-logo">UPI</div>
-                                                    </div>
-                                                    <span class="qr-caption">Scan with BHIM, GooglePay, PhonePe, or Paytm</span>
-                                                </div>
-
-                                                <div class="upi-text-checkout">
-                                                    <span class="upi-or">- OR ENTER UPI ID -</span>
-                                                    <form id="payment-upi-form" novalidate>
-                                                        <div class="form-group">
-                                                            <input type="text" id="pay-upi-id" placeholder="username@upi" required pattern="[\w\.\-]+@\w+">
-                                                            <span class="error-msg" id="err-pay-upi-id">Enter a valid UPI ID (e.g. name@bank).</span>
-                                                        </div>
-                                                        <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Pay ₹5,000</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="wizard-actions inline-actions">
-                                <button id="back-to-step-1" class="cta-btn secondary-btn"><i data-lucide="arrow-left"></i> Edit Form Details</button>
-                            </div>
-                        </div>
-
-                        <!-- Step 3: Success & Admission Slip -->
-                        <div class="wizard-step-pane" id="wizard-step-3">
-                            <div class="receipt-success-banner">
-                                <div class="success-icon-badge bounce">
-                                    <i data-lucide="check-circle-2"></i>
-                                </div>
-                                <h3>Enrollment Successfully Secured!</h3>
-                                <p>Your laboratory seat registration is complete. Please save the digital admission slip below.</p>
-                            </div>
-
-                            <!-- Printable Slip -->
-                            <div class="admission-slip-card minimal-card" id="admission-slip">
-                                <div class="slip-header">
-                                    <img src="assets/logo.png" alt="CoE Logo" class="slip-logo">
-                                    <div class="slip-title-meta">
-                                        <h4>BAHUBALI COLLEGE OF ENGINEERING</h4>
-                                        <span class="sub">CCNA Program BCE - Admission Slip</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="slip-body">
-                                    <div class="slip-grid">
-                                        <div class="slip-cell">
-                                            <span class="label">Course Name:</span>
-                                            <span class="val bold">CCNA Certification Training Program</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Duration & Lab:</span>
-                                            <span class="val">150 Hours of Offline Practical Labs</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Registration ID:</span>
-                                            <span class="val bold text-accent" id="slip-reg-id">BCE-CCNA-89721</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Date of Payment:</span>
-                                            <span class="val" id="slip-date">June 8, 2026</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Candidate Name:</span>
-                                            <span class="val" id="slip-candidate-name">John Doe</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Mobile Number:</span>
-                                            <span class="val" id="slip-candidate-phone">+91 9876543210</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Institution:</span>
-                                            <span class="val" id="slip-candidate-college">BCE Engineering</span>
-                                        </div>
-                                        <div class="slip-cell">
-                                            <span class="label">Department:</span>
-                                            <span class="val" id="slip-candidate-dept">CSE</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="slip-footer-notes">
-                                        <h5>Registration Instructions</h5>
-                                        <p>1. Present this printable digital admission slip at the <strong>Centre of Excellence for Networking (BCE)</strong> during registration confirmation.</p>
-                                        <p>2. Physical Batch Orientation starting date: <strong>July 17, 2026</strong>.</p>
-                                        <p>3. Session structure: Fridays & Saturdays (Full-Day Sessions).</p>
-                                    </div>
-                                </div>
-
-                                <div class="slip-qr-box">
-                                    <div class="svg-qr-payment mini">
-                                        <svg viewBox="0 0 100 100" class="qr-vector">
-                                            <rect width="100" height="100" fill="#ffffff"/>
-                                            <rect x="5" y="5" width="25" height="25" fill="#0b0f19" stroke="#eab308" stroke-width="2"/>
-                                            <rect x="10" y="10" width="15" height="15" fill="#ffffff"/>
-                                            <rect x="13" y="13" width="9" height="9" fill="#0b0f19"/>
-                                            <rect x="70" y="5" width="25" height="25" fill="#0b0f19" stroke="#eab308" stroke-width="2"/>
-                                            <rect x="75" y="10" width="15" height="15" fill="#ffffff"/>
-                                            <rect x="78" y="13" width="9" height="9" fill="#0b0f19"/>
-                                            <rect x="5" y="70" width="25" height="25" fill="#0b0f19" stroke="#eab308" stroke-width="2"/>
-                                            <rect x="10" y="75" width="15" height="15" fill="#ffffff"/>
-                                            <rect x="13" y="78" width="9" height="9" fill="#0b0f19"/>
-                                            <rect x="40" y="10" width="10" height="20" fill="#0b0f19"/>
-                                            <rect x="55" y="5" width="10" height="10" fill="#0b0f19"/>
-                                            <rect x="45" y="40" width="15" height="15" fill="#0b0f19"/>
-                                            <rect x="15" y="45" width="20" height="10" fill="#0b0f19"/>
-                                            <rect x="75" y="45" width="15" height="20" fill="#0b0f19"/>
-                                            <rect x="40" y="70" width="10" height="25" fill="#0b0f19"/>
-                                            <rect x="60" y="75" width="20" height="10" fill="#0b0f19"/>
-                                        </svg>
-                                    </div>
-                                    <span class="qr-verify-lbl">Admission QR Code</span>
-                                </div>
-                            </div>
-
-                            <div class="wizard-actions inline-actions flex-center">
-                                <button id="print-slip-btn" class="cta-btn primary-btn"><i data-lucide="printer"></i> Print Admission Slip</button>
-                                <button id="restart-enrollment-btn" class="cta-btn secondary-btn">Register Another Student</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" class="faq-section scroll-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <span class="section-subtitle">FAQ MANUAL</span>
-                    <h2 class="section-title">Frequently Asked Questions</h2>
-                    <div class="header-divider"></div>
-                </div>
-
-                <div class="faq-accordion-group">
-                    <div class="faq-item minimal-card">
-                        <button class="faq-trigger">
-                            <span>Who is eligible to join this certification course?</span>
-                            <i data-lucide="plus" class="faq-icon"></i>
-                        </button>
-                        <div class="faq-answer">
-                            <p>This course is specifically structured for Engineering Students (ECE, CSE, ISE, EEE), IT Job Seekers, Faculty members, and Higher Education aspirants. There are no strict coding prerequisites; basic computer operation literacy is sufficient.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item minimal-card">
-                        <button class="faq-trigger">
-                            <span>Is this training conducted online or offline?</span>
-                            <i data-lucide="plus" class="faq-icon"></i>
-                        </button>
-                        <div class="faq-answer">
-                            <p>This is a 100% offline training program. All lectures and the 150 hours of practical lab exercises are conducted directly at the <strong>Centre of Excellence for Networking</strong> inside the Bahubali College of Engineering campus, Shravanabelagola.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item minimal-card">
-                        <button class="faq-trigger">
-                            <span>How is the 150 hours scheduled?</span>
-                            <i data-lucide="plus" class="faq-icon"></i>
-                        </button>
-                        <div class="faq-answer">
-                            <p>To accommodate both college students and working professionals, classes are scheduled only on <strong>Fridays & Saturdays</strong> as full-day sessions (9:00 AM to 5:00 PM). This model allows students to fit training alongside their standard college curriculum.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item minimal-card">
-                        <button class="faq-trigger">
-                            <span>Do we get practice on physical routing racks?</span>
-                            <i data-lucide="plus" class="faq-icon"></i>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Yes. The Center of Excellence features physical Cisco Catalyst switches, Integrated Service Routers (ISRs), and console access terminal points. We combine physical device connection labs (cabling and terminal configurations) with extensive Cisco Packet Tracer simulations for complex topological setups.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item minimal-card">
-                        <button class="faq-trigger">
-                            <span>What certificate is issued at the end?</span>
-                            <i data-lucide="plus" class="faq-icon"></i>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Upon successfully completing the attendance threshold and passing the final practical networking evaluation, candidates receive an official <strong>CCNA Course Completion Certificate</strong> issued by the BCE Center of Excellence for Networking, validating their industry-ready skills.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section scroll-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <span class="section-subtitle">GET IN TOUCH</span>
-                    <h2 class="section-title">Program Information & Contact</h2>
-                    <div class="header-divider"></div>
-                </div>
-
-                <div class="contact-grid">
-                    
-                    <!-- Venue Location Card -->
-                    <div class="contact-info-card minimal-card">
-                        <h3>Venue Location</h3>
-                        <p>Centre of Excellence for Networking,<br>Bahubali College of Engineering,<br>Shravanabelagola - 573 135,<br>Hassan Dist, Karnataka, India.</p>
-                    </div>
-
-                    <!-- Direct Contacts Card -->
-                    <div class="contact-info-card minimal-card">
-                        <h3>Direct Contacts</h3>
-                        <a href="tel:+917339248886" class="contact-link">
-                            <i data-lucide="phone"></i> +91 7339248886
-                        </a>
-                        <a href="mailto:sdeepak.bce@gmail.com" class="contact-link">
-                            <i data-lucide="mail"></i> sdeepak.bce@gmail.com
-                        </a>
-                    </div>
-
-                    <!-- Poster QR Download Card -->
-                    <div class="poster-qr-card minimal-card">
-                        <div class="poster-qr-meta">
-                            <h4>Poster Scan Access</h4>
-                            <p>Scanning this QR code on a physical flyer loads this registration web portal immediately.</p>
-                            <button class="cta-btn secondary-btn btn-sm" id="download-qr-btn"><i data-lucide="download"></i> Download QR</button>
-                        </div>
-                        <div class="poster-qr-graphic">
-                            <svg viewBox="0 0 100 100" class="qr-vector-main" id="poster-qr-svg">
-                                <rect width="100" height="100" fill="#ffffff"/>
-                                <!-- Corners -->
-                                <rect x="5" y="5" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
-                                <rect x="9.5" y="9.5" width="13" height="13" fill="#ffffff"/>
-                                <rect x="12" y="12" width="8" height="8" fill="#0b0f19"/>
-
-                                <rect x="73" y="5" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
-                                <rect x="77.5" y="9.5" width="13" height="13" fill="#ffffff"/>
-                                <rect x="80" y="12" width="8" height="8" fill="#0b0f19"/>
-
-                                <rect x="5" y="73" width="22" height="22" fill="#0b0f19" stroke="#00e5ff" stroke-width="1.5"/>
-                                <rect x="9.5" y="77.5" width="13" height="13" fill="#ffffff"/>
-                                <rect x="12" y="80" width="8" height="8" fill="#0b0f19"/>
-
-                                <!-- Internal pattern nodes -->
-                                <rect x="35" y="10" width="5" height="15" fill="#0b0f19"/>
-                                <rect x="45" y="5" width="10" height="5" fill="#0b0f19"/>
-                                <rect x="60" y="15" width="5" height="15" fill="#0b0f19"/>
-                                <rect x="10" y="35" width="15" height="5" fill="#0b0f19"/>
-                                <rect x="5" y="50" width="15" height="5" fill="#0b0f19"/>
-                                <rect x="35" y="35" width="30" height="5" fill="#0b0f19"/>
-                                <rect x="40" y="45" width="10" height="20" fill="#0b0f19"/>
-                                <rect x="60" y="50" width="10" height="5" fill="#0b0f19"/>
-                                <rect x="75" y="35" width="20" height="5" fill="#0b0f19"/>
-                                <rect x="85" y="45" width="5" height="20" fill="#0b0f19"/>
-                                <rect x="35" y="75" width="5" height="15" fill="#0b0f19"/>
-                                <rect x="45" y="85" width="20" height="5" fill="#0b0f19"/>
-                                <rect x="60" y="70" width="10" height="5" fill="#0b0f19"/>
-                                <rect x="75" y="75" width="20" height="20" fill="#0b0f19"/>
-                                <rect x="80" y="80" width="10" height="10" fill="#ffffff"/>
-                            </svg>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-grid section-container">
-            <div class="footer-col brand-col">
-                <div class="brand-logo">
-                    <img src="assets/logo.png" alt="BCE CoE Logo" class="logo-img">
-                    <div class="logo-text">
-                        <span class="logo-title">CCNA PROGRAM BCE</span>
-                        <span class="logo-subtitle">Center of Excellence</span>
-                    </div>
-                </div>
-                <p class="brand-pitch">Authorized labs and certification coaching dedicated to producing routing, switching, and security engineers ready for enterprise network roles.</p>
-            </div>
-
-            <div class="footer-col links-col">
-                <h4>Quick Navigation</h4>
-                <ul class="footer-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About Center of Excellence</a></li>
-                    <li><a href="#curriculum">Syllabus</a></li>
-                    <li><a href="#schedule">Schedule & Venue</a></li>
-                    <li><a href="#faq">FAQs</a></li>
-                    <li><a href="#contact">Inquiries</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col contacts-col">
-                <h4>Academics & Operations</h4>
-                <p><strong>Bahubali College of Engineering</strong><br>ECE Department, Shravanabelagola - 573 135</p>
-                <p>Program Coordinator: Mr. S. Deepak<br>ECE Assistant Professor / Head of Networking CoE</p>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="section-container footer-bottom-layout">
-                <p>&copy; 2026 Bahubali College of Engineering. All rights reserved. | CCNA Program BCE.</p>
-                <div class="sec-badges">
-                    <span><i data-lucide="shield-check" class="icon-xs"></i> PCI-DSS Encrypted</span>
-                    <span><i data-lucide="lock" class="icon-xs"></i> SSL Verified</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Mentor Login Modal -->
-    <div class="secure-loader-overlay" id="mentor-login-modal">
-        <div class="loader-content minimal-card animate-scale mentor-modal-content">
-            <div class="modal-header-row">
-                <div class="modal-header-title">
-                    <i data-lucide="shield-alert" class="text-accent"></i>
-                    <h3>Mentor Authorization</h3>
-                </div>
-                <button id="close-login-btn" aria-label="Close Login Modal" title="Close Login"><i data-lucide="x"></i></button>
-            </div>
-            <p class="modal-desc">Authorized Faculty Access Only (Deepak sir). Please enter credentials to unlock the analytics registry.</p>
-            <form id="mentor-login-form" class="modal-form" novalidate>
-                <div class="form-group mb-16">
-                    <label for="login-username">Username</label>
-                    <div class="input-wrapper">
-                        <i data-lucide="user" class="input-icon"></i>
-                        <input type="text" id="login-username" placeholder="deepak.bce" required>
-                    </div>
-                </div>
-                <div class="form-group mb-24">
-                    <label for="login-password">Password</label>
-                    <div class="input-wrapper">
-                        <i data-lucide="key" class="input-icon"></i>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                    </div>
-                </div>
-                <button type="submit" class="cta-btn primary-btn shadow-btn full-width">Unlock Dashboard</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Mentor Dashboard Panel (Fullscreen Glass Overlay) -->
-    <div class="mentor-dashboard-panel" id="mentor-dashboard">
-        <div class="dashboard-header minimal-card">
-            <div class="brand-logo">
-                <img src="assets/logo.png" alt="BCE Logo" class="logo-img">
-                <div class="logo-text">
-                    <span class="logo-title">CCNA PROGRAM BCE</span>
-                    <span class="logo-subtitle">Mentor Dashboard</span>
-                </div>
-            </div>
-            <div class="dashboard-header-actions">
-                <span class="user-greeting"><i data-lucide="user-check"></i> Welcome, Mr. S. Deepak</span>
-                <button id="mentor-logout-btn" class="cta-btn secondary-btn btn-sm"><i data-lucide="log-out"></i> Logout</button>
-            </div>
-        </div>
-
-        <div class="dashboard-container section-container">
-            <!-- Analytics Cards Grid -->
-            <div class="analytics-grid">
-                <div class="analytics-card minimal-card">
-                    <div class="card-icon blue"><i data-lucide="users"></i></div>
-                    <div class="card-data">
-                        <span class="metric-num" id="stat-registered">0</span>
-                        <span class="metric-lbl">Total Registered</span>
-                    </div>
-                </div>
-                <div class="analytics-card minimal-card">
-                    <div class="card-icon green"><i data-lucide="badge-check"></i></div>
-                    <div class="card-data">
-                        <span class="metric-num" id="stat-paid">0</span>
-                        <span class="metric-lbl">Fees Paid</span>
-                    </div>
-                </div>
-                <div class="analytics-card minimal-card">
-                    <div class="card-icon yellow"><i data-lucide="alert-triangle"></i></div>
-                    <div class="card-data">
-                        <span class="metric-num" id="stat-unpaid">0</span>
-                        <span class="metric-lbl">Pending Payment</span>
-                    </div>
-                </div>
-                <div class="analytics-card minimal-card">
-                    <div class="card-icon purple"><i data-lucide="message-square"></i></div>
-                    <div class="card-data">
-                        <span class="metric-num" id="stat-inquiries">0</span>
-                        <span class="metric-lbl">Course Inquiries</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab content tables -->
-            <div class="dashboard-content-grid">
+          </div>
+
+          <!-- Coordinator Card -->
+          <div class="coordinator-card-wrapper">
+            <div class="glass-card coordinator-card">
+              <div class="coord-badge">Program Coordinator</div>
+              <div class="coord-image-container">
+                <img src="assets/coordinator.jpg" alt="Mr. S. Deepak" class="coord-img">
+              </div>
+              <div class="coord-info">
+                <h3>Mr. S. Deepak</h3>
+                <p class="coord-designation">Assistant Professor & Head</p>
+                <p class="coord-dept">Centre of Excellence for Networking, BCE</p>
                 
-                <!-- Registrations Registry Card -->
-                <div class="registry-card minimal-card">
-                    <div class="registry-header">
-                        <h3>Student Admission Registry</h3>
-                        <div class="registry-controls">
-                            <div class="search-box">
-                                <i data-lucide="search" class="search-icon"></i>
-                                <input type="text" id="db-search" placeholder="Search name or college...">
-                            </div>
-                            <select id="db-filter" class="table-filter-select" aria-label="Filter database registrations" title="Filter Database">
-                                <option value="all">Show All</option>
-                                <option value="paid">Paid Only</option>
-                                <option value="unpaid">Unpaid Only</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="table-scroll-wrapper">
-                        <table class="db-table" id="registrations-table">
-                            <thead>
-                                <tr>
-                                    <th>Ref ID</th>
-                                    <th>Candidate Name</th>
-                                    <th>Contact Info</th>
-                                    <th>Role & College</th>
-                                    <th>Status</th>
-                                    <th>Date Added</th>
-                                </tr>
-                            </thead>
-                            <tbody id="registrations-tbody">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
+                <hr class="coord-divider">
+                
+                <div class="coord-contacts">
+                  <a href="tel:7875936836" class="coord-contact-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <span>+91 7875936836</span>
+                  </a>
+                  <a href="mailto:deepak.bce@gmail.com" class="coord-contact-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <span>deepak.bce@gmail.com</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Course Coverage / Curriculum Section -->
+    <section id="curriculum" class="curriculum-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Learning Journey</span>
+          <h2 class="section-title">Comprehensive Course Coverage</h2>
+          <p class="section-desc">Designed to build your knowledge from foundational networking concepts up to modern automation practices.</p>
+        </div>
+
+        <div class="curriculum-grid">
+          
+          <!-- Module 1 -->
+          <div class="glass-card module-card">
+            <div class="module-num">01</div>
+            <h3 class="module-title">Network Fundamentals</h3>
+            <p class="module-desc">Understand basic network models (OSI and TCP/IP), network components (routers, switches, firewalls, and endpoints), and transmission media.</p>
+          </div>
+
+          <!-- Module 2 -->
+          <div class="glass-card module-card">
+            <div class="module-num">02</div>
+            <h3 class="module-title">IPv4 & IPv6 Addressing</h3>
+            <p class="module-desc">Master internet protocol addressing. Configure, deploy, and troubleshoot both traditional IPv4 schemas and modern IPv6 addresses.</p>
+          </div>
+
+          <!-- Module 3 -->
+          <div class="glass-card module-card">
+            <div class="module-num">03</div>
+            <h3 class="module-title">Subnetting Mastery</h3>
+            <p class="module-desc">Gain lightning-fast computation skills for variable-length subnet masking (VLSM), route summarization, and address optimization.</p>
+          </div>
+
+          <!-- Module 4 -->
+          <div class="glass-card module-card">
+            <div class="module-num">04</div>
+            <h3 class="module-title">VLAN & Switching</h3>
+            <p class="module-desc">Configure local switching. Set up Virtual LANs, Trunking protocol, Inter-VLAN routing, and Spanning Tree Protocol (STP) configurations.</p>
+          </div>
+
+          <!-- Module 5 -->
+          <div class="glass-card module-card">
+            <div class="module-num">05</div>
+            <h3 class="module-title">Routing Protocols (OSPF)</h3>
+            <p class="module-desc">Implement dynamic routing networks. Focus heavily on single-area and multi-area Open Shortest Path First (OSPFv2 and OSPFv3) operations.</p>
+          </div>
+
+          <!-- Module 6 -->
+          <div class="glass-card module-card">
+            <div class="module-num">06</div>
+            <h3 class="module-title">Network Security</h3>
+            <p class="module-desc">Secure network devices using Access Control Lists (ACLs), Port Security, DHCP snooping, and secure remote access protocols (SSH).</p>
+          </div>
+
+          <!-- Module 7 -->
+          <div class="glass-card module-card">
+            <div class="module-num">07</div>
+            <h3 class="module-title">Wireless Networking</h3>
+            <p class="module-desc">Understand wireless architecture, configure Wireless LAN Controllers (WLC), set up SSIDs, and implement robust WPA2/WPA3 security.</p>
+          </div>
+
+          <!-- Module 8 -->
+          <div class="glass-card module-card">
+            <div class="module-num">08</div>
+            <h3 class="module-title">Automation Basics</h3>
+            <p class="module-desc">Introduction to modern controller-based networks, software-defined architectures (SDN), REST APIs, JSON data structures, and Ansible.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Schedule & Training Model Section -->
+    <section id="schedule" class="schedule-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Structure & Timeline</span>
+          <h2 class="section-title">Training Model & Schedule</h2>
+          <p class="section-desc">Designed to accommodate both college students and working professionals through a flexible hybrid schedule.</p>
+        </div>
+
+        <div class="schedule-grid">
+          
+          <div class="glass-card model-item">
+            <div class="model-icon-box">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <h3>Fridays & Saturdays</h3>
+            <p class="model-text">Weekly core lab and theory sessions. Conducted using a hybrid model: virtual check-ins combined with extensive physically supervised offline labs.</p>
+          </div>
+
+          <div class="glass-card model-item">
+            <div class="model-icon-box">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12,6 12,12 16,14"></polyline></svg>
+            </div>
+            <h3>Full-Day Intensive Sessions</h3>
+            <p class="model-text">Maximize absorption with dedicated, full-day session blocks. Provides the immersion necessary for deep topology construction and network troubleshooting.</p>
+          </div>
+
+          <div class="glass-card model-item">
+            <div class="model-icon-box">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+            </div>
+            <h3>150 Hours of Total Labs</h3>
+            <p class="model-text">Practice makes perfect. The course allocates 150 hours of physical lab access, giving you ample time to build, verify, and resolve real-world networking faults.</p>
+          </div>
+
+        </div>
+
+        <div class="glass-card schedule-calendar">
+          <h3>Ideal For Participants</h3>
+          <div class="audience-grid">
+            <div class="audience-tag">
+              <span class="bullet"></span> Engineering Students (CS, IS, EC, EE)
+            </div>
+            <div class="audience-tag">
+              <span class="bullet"></span> Job Seekers in IT & Networking
+            </div>
+            <div class="audience-tag">
+              <span class="bullet"></span> Network Administrator Aspirants
+            </div>
+            <div class="audience-tag">
+              <span class="bullet"></span> IT Professionals Up-skilling for Cisco Certifications
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration & Payment Section -->
+    <section id="registration" class="registration-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Secure Enrolment</span>
+          <h2 class="section-title">Course Registration & Payment</h2>
+          <p class="section-desc">Register today to secure your seat. Completing registration grants you instant access to the simulated payment portal.</p>
+        </div>
+
+        <div class="reg-pay-wizard glass-card">
+          <!-- Wizard Tabs -->
+          <div class="wizard-header">
+            <div class="wizard-tab active" id="tabStep1">
+              <span class="tab-number">1</span>
+              <span class="tab-label">Registration Form</span>
+            </div>
+            <div class="wizard-tab" id="tabStep2">
+              <span class="tab-number">2</span>
+              <span class="tab-label">Online Payment</span>
+            </div>
+            <div class="wizard-tab" id="tabStep3">
+              <span class="tab-number">3</span>
+              <span class="tab-label">Confirmation</span>
+            </div>
+          </div>
+
+          <!-- Wizard Content Area -->
+          <div class="wizard-content">
+            
+            <!-- Step 1: Registration Form -->
+            <div class="wizard-step active" id="step1Content">
+              <form id="regForm" class="reg-form" novalidate>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="fullName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                    <div class="invalid-feedback" id="fullNameError"></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+                    <div class="invalid-feedback" id="emailError"></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="mobile">Mobile Number <span class="required">*</span></label>
+                    <input type="tel" id="mobile" class="form-control" placeholder="10-digit mobile number" required>
+                    <div class="invalid-feedback" id="mobileError"></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="category">Category <span class="required">*</span></label>
+                    <select id="category" class="form-control" required>
+                      <option value="">-- Select Category --</option>
+                      <option value="student">Engineering Student</option>
+                      <option value="jobseeker">Job Seeker</option>
+                      <option value="professional">Working Professional</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <div class="invalid-feedback" id="categoryError"></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="collegeType">College / Institution Type <span class="required">*</span></label>
+                    <select id="collegeType" class="form-control" required>
+                      <option value="">-- Select College Option --</option>
+                      <option value="bce">Bahubali College of Engineering (BCE)</option>
+                      <option value="other">Other College / Institution</option>
+                    </select>
+                    <div class="invalid-feedback" id="collegeTypeError"></div>
+                  </div>
                 </div>
 
-                <!-- Inquiries Card -->
-                <div class="registry-card minimal-card">
-                    <div class="registry-header">
-                        <h3>General Contact Messages</h3>
-                    </div>
-                    <div class="table-scroll-wrapper">
-                        <table class="db-table" id="inquiries-table">
-                            <thead>
-                                <tr>
-                                    <th>Sender Name</th>
-                                    <th>Email Address</th>
-                                    <th>Inquiry Message</th>
-                                    <th>Sent Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="inquiries-tbody">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- BCE Student Fields -->
+                <div id="bceFields" class="form-grid hidden" style="margin-top: 24px; border-top: 1px dashed var(--border-color); padding-top: 24px; margin-bottom: 24px;">
+                  <div class="form-group">
+                    <label for="usn">University Seat Number (USN) <span class="required">*</span></label>
+                    <input type="text" id="usn" class="form-control" placeholder="e.g. 4BD22CS001">
+                    <div class="invalid-feedback" id="usnError"></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="year">Year of Study <span class="required">*</span></label>
+                    <select id="year" class="form-control">
+                      <option value="">-- Select Year --</option>
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
+                    </select>
+                    <div class="invalid-feedback" id="yearError"></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="branchBce">Branch <span class="required">*</span></label>
+                    <select id="branchBce" class="form-control">
+                      <option value="">-- Select Branch --</option>
+                      <option value="cs">Computer Science (CS)</option>
+                      <option value="is">Information Science (IS)</option>
+                      <option value="ec">Electronics & Communication (EC)</option>
+                      <option value="ee">Electrical & Electronics (EE)</option>
+                      <option value="other">Other Branch</option>
+                    </select>
+                    <div class="invalid-feedback" id="branchBceError"></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="courseBce">Course Studying <span class="required">*</span></label>
+                    <select id="courseBce" class="form-control">
+                      <option value="">-- Select Course --</option>
+                      <option value="B.E.">B.E. (Bachelor of Engineering)</option>
+                      <option value="Diploma">Diploma</option>
+                      <option value="M.Tech">M.Tech</option>
+                      <option value="Other">Other Course</option>
+                    </select>
+                    <div class="invalid-feedback" id="courseBceError"></div>
+                  </div>
                 </div>
 
+                <!-- Other College Fields -->
+                <div id="otherFields" class="form-grid hidden" style="margin-top: 24px; border-top: 1px dashed var(--border-color); padding-top: 24px; margin-bottom: 24px;">
+                  <div class="form-group">
+                    <label for="collegeNameOther">College Name <span class="required">*</span></label>
+                    <input type="text" id="collegeNameOther" class="form-control" placeholder="Enter College Name">
+                    <div class="invalid-feedback" id="collegeNameOtherError"></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="branchOther">Branch Name <span class="required">*</span></label>
+                    <input type="text" id="branchOther" class="form-control" placeholder="e.g. CS / Mechanical / Civil">
+                    <div class="invalid-feedback" id="branchOtherError"></div>
+                  </div>
+                </div>
+
+                <div class="form-action-btn">
+                  <button type="submit" class="btn btn-primary btn-lg">Proceed to Payment</button>
+                </div>
+              </form>
             </div>
-        </div>
-    </div>
 
-    <!-- Secure Modal Loader (Simulating Payment Network Check) -->
-    <div class="secure-loader-overlay" id="payment-loader">
-        <div class="loader-content minimal-card">
-            <div class="spinner"></div>
-            <h4 id="loader-status">Initializing Secure Transaction...</h4>
-            <p>Please do not refresh the page or click back.</p>
-            <div class="sec-info">
-                <i data-lucide="lock" class="text-success icon-sm"></i>
-                <span>Routing connection via secure bank gateway...</span>
+            <!-- Step 2: Payment Portal -->
+            <div class="wizard-step" id="step2Content">
+              <div class="payment-layout">
+                <!-- Order Summary -->
+                <div class="payment-summary">
+                  <h4>Fee Details Summary</h4>
+                  <div class="summary-row">
+                    <span>Program Registration & Lab Fee</span>
+                    <span>₹6,356.00</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>18% SGST/CGST</span>
+                    <span>₹1,144.00</span>
+                  </div>
+                  <hr class="summary-divider">
+                  <div class="summary-row total-row">
+                    <span>Total Enrolment Fee</span>
+                    <span class="total-price">₹7,500.00</span>
+                  </div>
+                  
+                  <div class="security-seal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>Secure SSL Mock-Gateway (No actual money charged)</span>
+                  </div>
+                </div>
+
+                <!-- Payment Forms -->
+                <div class="payment-methods">
+                  <h4>Choose Payment Method</h4>
+                  <div class="pay-method-tabs">
+                    <button class="pay-method-btn active" data-method="upi" style="cursor: default;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                      Razorpay UPI
+                    </button>
+                  </div>
+
+                  <!-- UPI Form -->
+                  <div class="pay-form active" id="payFormUpi">
+                    <p class="pay-instructions">Scan the secure Razorpay-hosted QR Code below using any UPI App (PhonePe, GPay, Paytm) to complete your transaction.</p>
+                    <div class="upi-qr-box">
+                      <div class="upi-logo" style="color: #2563eb; font-size: 1rem;">Razorpay</div>
+                      <img src="assets/phonepe_qr.png" alt="UPI Scan QR" class="upi-qr-img">
+                      <span class="upi-timer" id="upiTimer">Time Remaining: 05:00</span>
+                    </div>
+                    <div class="form-group vpa-group">
+                      <label for="upiVpa">Or enter UPI ID / VPA</label>
+                      <div class="input-with-action">
+                        <input type="text" id="upiVpa" class="form-control" placeholder="username@okaxis">
+                        <button class="btn btn-primary" id="btnUpiVerify">Verify & Pay</button>
+                      </div>
+                      <div class="invalid-feedback" id="upiVpaError"></div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Alert Toast -->
-    <div class="toast-alert" id="toast-alert">
-        <i data-lucide="info" class="toast-icon" id="toast-icon"></i>
-        <span class="toast-message" id="toast-message">Message sent successfully!</span>
-    </div>
-    <!-- PWA Install Banner -->
-    <div class="pwa-install-banner" id="pwa-install-banner">
-        <div class="install-logo-wrapper">
-            <img src="assets/icon-192.png" alt="App Icon" class="install-logo">
-        </div>
-        <div class="install-info">
-            <h4>CCNA Program App</h4>
-            <p>Install the app for quick, offline-friendly access.</p>
-        </div>
-        <div class="install-actions">
-            <button id="pwa-install-btn" class="cta-btn primary-btn btn-sm">Install</button>
-            <button id="pwa-close-btn" class="close-btn-sm" aria-label="Dismiss"><i data-lucide="x"></i></button>
-        </div>
-    </div>
+            <!-- Step 3: Confirmation -->
+            <div class="wizard-step" id="step3Content">
+              <div class="success-screen">
+                <div class="success-icon-badge">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="icon-svg"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+                </div>
+                <h3>Registration Successful!</h3>
+                <p class="success-msg">Congratulations, your seat has been reserved for the CCNA Certification Training Program starting on <strong>17th July 2026</strong>.</p>
+                
+                <div class="invoice-box" id="invoiceArea">
+                  <div class="invoice-header">
+                    <div class="invoice-logo-group">
+                      <img src="assets/logo.jpg" alt="BCE" class="invoice-logo">
+                      <div>
+                        <h5>Bahubali College of Engineering</h5>
+                        <p>Centre of Excellence for Networking</p>
+                      </div>
+                    </div>
+                    <div class="invoice-title">
+                      <h4>Receipt</h4>
+                      <p id="invoiceNumber">No: #BCE-CCNA-10294</p>
+                    </div>
+                  </div>
+                  
+                  <div class="invoice-details">
+                    <div class="detail-col">
+                      <strong>Registrant Details:</strong>
+                      <p id="recName">Full Name</p>
+                      <p id="recEmail">Email</p>
+                      <p id="recMobile">Mobile</p>
+                    </div>
+                    <div class="detail-col">
+                      <strong>Payment Summary:</strong>
+                      <p id="recDate">Date: June 16, 2026</p>
+                      <p>Status: <span class="badge-success">Paid</span></p>
+                      <p>Txn ID: <span id="recTxnId">TXN938472918</span></p>
+                    </div>
+                  </div>
 
-    <!-- Offline Indicator Banner -->
-    <div class="offline-notification" id="offline-notification">
-        <i data-lucide="wifi-off" class="offline-icon"></i>
-        <div class="offline-text">
-            <h4>Connection Lost</h4>
-            <p>You are offline. Registration and database access are limited.</p>
+                  <table class="invoice-table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th class="text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>CCNA Program Tuition & Lab Resource Fee (150 Hours Practical Labs)</td>
+                        <td class="text-right">₹6,356.00</td>
+                      </tr>
+                      <tr>
+                        <td>Tax & Service Fees (18% SGST/CGST)</td>
+                        <td class="text-right">₹1,144.00</td>
+                      </tr>
+                      <tr class="table-total">
+                        <td>Total Amount Paid</td>
+                        <td class="text-right">₹7,500.00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+                  <div class="invoice-footer">
+                    <p>Venue: Centre of Excellence for Networking, Bahubali College of Engineering, Shravanabelagola</p>
+                    <p class="notice">Please show a copy of this receipt on your first day of training (17th July 2026).</p>
+                  </div>
+                </div>
+
+                <div class="success-actions">
+                  <button class="btn btn-primary" id="btnDownloadInvoice">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Print Receipt
+                  </button>
+                  <button class="btn btn-outline" id="btnResetWizard">Register Another Person</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Common Enquiries</span>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-desc">Got questions? We've got answers. Explore common questions regarding the CCNA training course.</p>
+        </div>
+
+        <div class="faq-list">
+          
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>What are the exact prerequisites for this training program?</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="faq-content">
+              <p>There are no harsh prerequisites. Any student, job seeker, or professional interested in computer networks can join. A basic understanding of computers is helpful. The syllabus covers networking basics starting from line one.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>Is this training program fully online or offline?</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="faq-content">
+              <p>This is primarily an **offline, hands-on training program** conducted at the Centre of Excellence for Networking in Bahubali College of Engineering. Since there are 150 hours of practical labs, physical attendance on Fridays & Saturdays is crucial to work on physical routers and switches.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>What hardware will we get to work on in the laboratory?</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="faq-content">
+              <p>Participants get direct access to Cisco ISR 2900/1900 Series Routers and Cisco Catalyst 2960/3560 Layer 2 & Layer 3 Managed Switches in our physical racks, combined with virtual logical simulations on Cisco Packet Tracer.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>Does this program fee include the Cisco certification exam voucher?</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="faq-content">
+              <p>No, the program fee covers the 150 hours of intensive hands-on lab training, dedicated instructors, material, and training certificate. The official Cisco CCNA exam voucher fee must be paid separately directly to Cisco/PearsonVUE when taking the exam. We provide full guidance on booking.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>Can working professionals adjust their laboratory schedules?</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="faq-content">
+              <p>Yes, our laboratory maintains extended operational hours on Friday and Saturday evenings. We also support coordinate self-paced catchup sessions with the coordinator for professionals who have tight project deliveries.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Get In Touch</span>
+          <h2 class="section-title">Contact Us Directly</h2>
+          <p class="section-desc">Have any custom queries or need assistance with the registration? Reach us directly at our campus office.</p>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Contact Info -->
+          <div class="contact-info">
+            <div class="contact-info-card glass-card">
+              <h3>Office Information</h3>
+              <p>For official inquiries regarding course structure, corporate training tie-ups, or institutional registrations, contact our Center of Excellence Office.</p>
+              
+              <div class="info-details-list">
+                <div class="info-detail-item">
+                  <div class="info-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  </div>
+                  <div>
+                    <h5>Venue Address</h5>
+                    <p>Centre of Excellence for Networking,<br>Bahubali College of Engineering,<br>Shravanabelagola, Channarayapatna Taluk,<br>Hassan District, Karnataka - 573135</p>
+                  </div>
+                </div>
+
+                <div class="info-detail-item">
+                  <div class="info-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </div>
+                  <div>
+                    <h5>Office Timings</h5>
+                    <p>Monday - Saturday: 9:00 AM - 4:00 PM</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo-group">
+          <img src="assets/logo.jpg" alt="BCE Logo" class="footer-logo">
+          <div>
+            <h4>Bahubali College of Engineering</h4>
+            <p>Centre of Excellence for Networking</p>
+          </div>
+        </div>
+        <p class="footer-about-text">A premier institution established in Shravanabelagola, providing state-of-the-art engineering courses and training programs.</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#curriculum">Curriculum</a></li>
+          <li><a href="#schedule">Schedule</a></li>
+          <li><a href="#registration">Register & Pay</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="mentor.html" target="_blank" style="color: var(--color-accent);" title="Mentor Access"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="icon-svg" style="vertical-align: middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contacts">
+        <h4>Direct Contact</h4>
+        <p><strong>Mr. S. Deepak</strong> (Coordinator)</p>
+        <p>Email: <a href="mailto:deepak.bce@gmail.com">deepak.bce@gmail.com</a></p>
+        <p>Phone: <a href="tel:7875936836">+91 7875936836</a></p>
+        <p class="footer-affil">Affiliated to VTU Belagavi | Approved by AICTE</p>
+      </div>
     </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-container">
+        <p class="copyright">&copy; 2026 Bahubali College of Engineering. All rights reserved.</p>
+        <p class="designer">Designed by Antigravity AI Codebase Specialist</p>
+      </div>
+    </div>
+  </footer>
 
-    <!-- Bottom Navigation Bar for Mobile App Mode -->
-    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
-        <a href="#home" class="bottom-nav-item active" data-section="home">
-            <i data-lucide="home"></i>
-            <span>Home</span>
-        </a>
-        <a href="#about" class="bottom-nav-item" data-section="about">
-            <i data-lucide="info"></i>
-            <span>About</span>
-        </a>
-        <a href="#curriculum" class="bottom-nav-item" data-section="curriculum">
-            <i data-lucide="book-open"></i>
-            <span>Syllabus</span>
-        </a>
-        <a href="#schedule" class="bottom-nav-item" data-section="schedule">
-            <i data-lucide="calendar"></i>
-            <span>Schedules</span>
-        </a>
-        <a href="#register" class="bottom-nav-item" data-section="register">
-            <i data-lucide="user-plus"></i>
-            <span>Registration</span>
-        </a>
-    </nav>
 
-    <!-- Custom Script -->
-    <script src="app.js"></script>
+  <!-- Poster Preview Modal -->
+  <div class="modal" id="posterModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content glass-card">
+        <div class="modal-header">
+          <h3>Training Program Official Poster</h3>
+          <button class="modal-close" id="closePosterModal">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="modal-p">Official promotional flyer for Bahubali College of Engineering's CCNA Certification training program.</p>
+          <div class="poster-container">
+            <img src="assets/poster.jpg" alt="Official Program Poster" class="modal-poster-img">
+          </div>
+          <div class="poster-actions">
+            <a href="assets/poster.jpg" download="BCE_CCNA_Poster.jpg" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Poster File
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+  <script src="chatbot.js"></script>
 </body>
 </html>

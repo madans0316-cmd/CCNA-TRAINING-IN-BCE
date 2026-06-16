@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">CCNA Program BCE</string>
-    <string name="title_activity_main">CCNA Program BCE</string>
-    <string name="package_name">com.bce.ccnaprogram</string>
-    <string name="custom_url_scheme">com.bce.ccnaprogram</string>
-</resources>
